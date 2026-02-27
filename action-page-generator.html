@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Action Page Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --border-input: #d1d5db;
+      --focus: #3b82f6;
+      --text: #0f172a;
+      --text-2: #374151;
+      --text-3: #6b7280;
+      --text-4: #9ca3af;
+      --accent: #2563eb;
+      --accent-h: #1d4ed8;
+      --accent-bg: #eff6ff;
+      --accent-border: #bfdbfe;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --r4: 4px; --r6: 6px; --r8: 8px; --r10: 10px;
+      --shadow: 0 1px 3px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+      --f: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      font-family: var(--f);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .app-logo { display: flex; align-items: center; gap: 9px; }
+    .app-logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .app-logo-text { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .app-sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+    .app-tagline { font-size: 13px; color: var(--text-3); }
+
+    /* ── Layout ── */
+    .layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: 464px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── Input Panel ── */
+    .input-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r10);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-section {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-section:last-child { border-bottom: none; }
+
+    /* ── Intro ── */
+    .intro-text { font-size: 13px; color: var(--text-3); line-height: 1.75; }
+    .intro-text strong { color: var(--text-2); font-weight: 600; }
+
+    /* ── Section labels ── */
+    .slabel {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.9px; color: var(--text-4); margin-bottom: 10px;
+    }
+    .slabel-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .slabel-row .slabel { margin-bottom: 0; }
+
+    /* ── RSS Import section ── */
+    .rss-url-row {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .rss-url-input {
+      flex: 1;
+      height: 34px;
+      border: 1px solid var(--border-input);
+      border-radius: var(--r6);
+      padding: 0 10px;
+      font-family: var(--f);
+      font-size: 12px;
+      color: var(--text);
+      background: var(--surface-2);
+      transition: border-color .15s, box-shadow .15s;
+      min-width: 0;
+    }
+    .rss-url-input:focus {
+      outline: none; border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+      background: var(--surface);
+    }
+    .rss-url-input::placeholder { color: var(--text-4); font-size: 11px; }
+    .btn-import {
+      height: 34px; padding: 0 14px;
+      background: var(--accent); color: white;
+      border: none; border-radius: var(--r6);
+      font-family: var(--f); font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    .btn-import:hover { background: var(--accent-h); }
+    .btn-import:disabled { opacity: .5; cursor: default; }
+
+    /* ── Notice / Error banner ── */
+    .rss-notice {
+      display: none; margin-top: 10px;
+      padding: 10px 12px; border-radius: var(--r6);
+      font-size: 12px; line-height: 1.6;
+    }
+    .rss-notice.show { display: block; }
+    .rss-notice.error { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
+    .rss-notice.warn  { background: var(--amber-bg); border: 1px solid var(--amber-border); color: #92400e; }
+    .rss-notice.ok    { background: var(--green-bg); border: 1px solid var(--green-border); color: #166534; }
+    .rss-notice a { color: inherit; font-weight: 600; }
+
+    /* ── LegiScan badge ── */
+    .ls-new-badge {
+      font-size: 10px; font-weight: 700; color: #fff;
+      background: #16a34a; padding: 2px 7px; border-radius: 10px;
+      letter-spacing: .5px; text-transform: uppercase; flex-shrink: 0;
+    }
+    .ls-hint { font-size: 11px; color: var(--text-4); margin-top: 6px; line-height: 1.5; }
+
+    /* ── Bill Status Bar ── */
+    .bill-status-bar {
+      display: none; margin-top: 12px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r8); overflow: hidden;
+    }
+    .bill-status-bar.show { display: block; }
+    .bsb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px;
+    }
+    .bsb-left { display: flex; align-items: center; gap: 8px; }
+    .bill-num-tag {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.2px;
+    }
+    .stage-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; padding: 2px 8px; border-radius: 10px;
+    }
+    .stage-badge.referred { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .stage-badge.passed   { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .stage-badge.hearing  { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
+    .stage-badge.intro    { background: var(--surface); color: var(--text-3); border: 1px solid var(--border); }
+    .timeline-toggle {
+      font-size: 11px; color: var(--text-3); background: none; border: none;
+      cursor: pointer; padding: 2px 6px; border-radius: 4px;
+      transition: background .15s;
+    }
+    .timeline-toggle:hover { background: var(--border); color: var(--text-2); }
+    .committee-chips {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      padding: 0 12px 10px;
+    }
+    .cmt-chip {
+      font-size: 11px; padding: 3px 9px;
+      background: #ede9fe; color: #5b21b6;
+      border: 1px solid #c4b5fd; border-radius: 10px;
+      font-weight: 600;
+    }
+    .timeline-items {
+      border-top: 1px solid var(--border);
+      max-height: 180px; overflow-y: auto;
+    }
+    .timeline-item {
+      display: flex; gap: 10px; padding: 8px 12px;
+      border-bottom: 1px solid var(--border); font-size: 11px;
+      line-height: 1.5;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .ti-date { color: var(--text-4); white-space: nowrap; flex-shrink: 0; min-width: 84px; }
+    .ti-text { color: var(--text-2); }
+
+    /* ── Fields ── */
+    .fields-stack { display: flex; flex-direction: column; gap: 12px; }
+    .fg { display: flex; flex-direction: column; gap: 5px; }
+    .fl {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .fl-opt {
+      font-size: 10px; font-weight: 500; color: var(--text-4);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 1px 5px; letter-spacing: .3px;
+    }
+    .fi, .fta {
+      width: 100%; height: 36px;
+      border: 1px solid var(--border-input); border-radius: var(--r6);
+      padding: 0 11px;
+      font-family: var(--f); font-size: 13px; color: var(--text);
+      background: var(--surface);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .fta { height: 70px; padding: 9px 11px; resize: vertical; line-height: 1.55; }
+    .fi:focus, .fta:focus {
+      outline: none; border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+    }
+    .fi.flash, .fta.flash { animation: field-flash .7s ease forwards; }
+    @keyframes field-flash {
+      0%   { background: #fef3c7; border-color: #f59e0b; }
+      100% { background: var(--surface); border-color: var(--border-input); }
+    }
+
+    /* ── Filename ── */
+    .fname-wrap {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 11px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r6); font-size: 12px; color: var(--text-3);
+      margin-bottom: 12px;
+    }
+    .fname-wrap svg { color: var(--text-4); flex-shrink: 0; }
+    .fname { font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700; color: var(--text-2); word-break: break-all; }
+
+    /* ── Action buttons ── */
+    .action-row { display: flex; gap: 10px; }
+    .btn-dl {
+      flex: 1; height: 40px;
+      background: var(--accent); color: white; border: none;
+      border-radius: var(--r6); font-family: var(--f); font-size: 14px;
+      font-weight: 600; cursor: pointer;
+      transition: background .15s, transform .1s; letter-spacing: -0.2px;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn-dl:hover { background: var(--accent-h); }
+    .btn-dl:active { transform: scale(.99); }
+    .btn-sample {
+      height: 40px; padding: 0 18px;
+      background: var(--surface); color: var(--text-3);
+      border: 1px solid var(--border-input); border-radius: var(--r6);
+      font-family: var(--f); font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .btn-sample:hover { background: var(--surface-2); color: var(--text-2); border-color: #bdc5d0; }
+
+    /* ── Success ── */
+    .success-msg {
+      display: none; margin-top: 12px; padding: 12px 14px;
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: var(--r6);
+    }
+    .success-msg.show { display: block; }
+    .success-title { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 3px; }
+    .success-body { font-size: 12px; color: #166534; line-height: 1.6; }
+
+    /* ── Preview panel ── */
+    .preview-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r10); box-shadow: var(--shadow);
+      overflow: hidden; position: sticky; top: 80px;
+    }
+    .preview-bar {
+      height: 42px; padding: 0 16px;
+      background: var(--surface-2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .pbar-left { display: flex; align-items: center; gap: 10px; }
+    .traffic-lights { display: flex; gap: 5px; }
+    .tl { width: 11px; height: 11px; border-radius: 50%; }
+    .tl-r { background: #ff5f57; } .tl-y { background: #febc2e; } .tl-g { background: #28c840; }
+    .preview-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-4); }
+    .live-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-4); }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .live-dot.busy { background: #f59e0b; animation: pulse .8s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .preview-iframe { width: 100%; height: 680px; border: none; display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+      .preview-panel { position: static; }
+      .preview-iframe { height: 520px; }
+      .app-tagline, .app-sep { display: none; }
+      .app-header { padding: 0 16px; }
+    }
+    @media (max-width: 480px) {
+      .action-row { flex-direction: column; }
+      .btn-sample { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <div class="app-logo">
+    <div class="app-logo-icon">📢</div>
+    <span class="app-logo-text">Action Page Generator</span>
+  </div>
+  <div class="app-sep"></div>
+  <span class="app-tagline">Create a shareable contact-action page in seconds — no code needed</span>
+</header>
+
+<!-- ═══ LAYOUT ═══ -->
+<div class="layout">
+
+  <!-- ─── INPUT PANEL ─── -->
+  <div class="input-panel">
+
+    <!-- Intro -->
+    <div class="panel-section">
+      <p class="intro-text">
+        <strong>Welcome!</strong> Create a shareable advocacy action page in four steps:
+        enter a bill number to pull live status, add your logo and customize the fields,
+        preview in real time, then <strong>Download HTML</strong> to get a file you can
+        share directly with supporters or upload to a hosting service like
+        <a href="https://netlify.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;">Netlify</a>.
+      </p>
+    </div>
+
+    <!-- ─── LEGISCAN LOOKUP ─── -->
+    <div class="panel-section">
+      <div class="slabel" style="margin-bottom:10px;">Enter Bill Number</div>
+      <div class="rss-url-row">
+        <input
+          id="lsBillNum"
+          type="text"
+          class="fi rss-url-input"
+          placeholder="e.g. HB1234 or SB567"
+          style="height:34px;text-transform:uppercase;"
+          oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"
+          onkeydown="if(event.key==='Enter') lookupLegiScan()"
+        >
+        <button id="lsBtn" class="btn-import" onclick="lookupLegiScan()">Look Up</button>
+      </div>
+      <div id="lsNotice" class="rss-notice"></div>
+
+      <!-- Bill status bar (shown after successful lookup) -->
+      <div id="billStatusBar" class="bill-status-bar">
+        <div class="bsb-header">
+          <div class="bsb-left">
+            <span id="bsbBillNum" class="bill-num-tag"></span>
+            <span id="bsbBadge" class="stage-badge"></span>
+          </div>
+          <button class="timeline-toggle" id="timelineToggleBtn" onclick="toggleTimeline()">History ▾</button>
+        </div>
+        <div id="committeChips" class="committee-chips"></div>
+        <div id="timelineItems" class="timeline-items" style="display:none;"></div>
+      </div>
+
+      <div class="ls-hint">The panel above shows the bill's current stage, committee assignment, and full action history. All fields below are auto-filled — review and edit anything before downloading.</div>
+    </div>
+
+    <!-- ─── FIELDS ─── -->
+    <div class="panel-section">
+      <div class="slabel">Fields</div>
+      <div class="fields-stack">
+
+        <div class="fg">
+          <label class="fl" for="fOrg">Organization Name</label>
+          <input class="fi" id="fOrg" type="text" placeholder="e.g. Hawaiʻi Food + Policy" oninput="onInput()">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fCampaign">Campaign / Bill Name</label>
+          <input class="fi" id="fCampaign" type="text" placeholder="e.g. SB2925 – Relating to Coconut Trees" oninput="onInput()">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fHeadline">Headline</label>
+          <input class="fi" id="fHeadline" type="text" placeholder="e.g. Urge the Senate to schedule a hearing" oninput="onInput()">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fSummary">Short Summary</label>
+          <textarea class="fta" id="fSummary" placeholder="One or two sentences about the issue and why it matters." oninput="onInput()"></textarea>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fEmail">Target Email</label>
+          <input class="fi" id="fEmail" type="email" placeholder="wamcommittee@capitol.hawaii.gov" oninput="onInput()">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fCCEmail">
+            CC Email
+            <span class="fl-opt">optional</span>
+          </label>
+          <input class="fi" id="fCCEmail" type="email" placeholder="sendelacruz@capitol.hawaii.gov" oninput="onInput()">
+          <div class="fh" style="margin-top:3px;font-size:11px;color:#9ca3af">CC the committee chair — auto-filled from RSS import</div>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fSubject">Email Subject</label>
+          <input class="fi" id="fSubject" type="text" placeholder="e.g. Please schedule a hearing on SB2925" oninput="onInput()">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fPhone">Target Phone Number</label>
+          <input class="fi" id="fPhone" type="tel" placeholder="(808) 586-0000" oninput="onInput()">
+          <div class="fh" style="font-size:11px;color:#9ca3af;margin-top:3px">Required to show the Call Now button &amp; phone script section</div>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fLink">
+            Official Link
+            <span class="fl-opt">optional</span>
+          </label>
+          <input class="fi" id="fLink" type="url" placeholder="https://www.capitol.hawaii.gov/…" oninput="onInput()">
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fEmailBody">
+            Email Body Template
+            <span class="fl-opt">shown to supporters</span>
+          </label>
+          <textarea class="fta" id="fEmailBody" rows="7" placeholder="Dear Committee Chair,&#10;&#10;My name is [Your Name], and I am writing to urge you to schedule a hearing for this bill...&#10;&#10;[Your Name]&#10;[Your City, HI]" oninput="onInput()"></textarea>
+          <div class="fh" style="margin-top:4px;font-size:11px;color:#9ca3af">Supporters will see this pre-filled — they can personalize it before sending</div>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="fPhoneScript">
+            Phone Script / Talking Points
+            <span class="fl-opt">optional</span>
+          </label>
+          <textarea class="fta" id="fPhoneScript" rows="5" placeholder="Hi, my name is [Your Name] and I'm a resident of Hawaii. I'm calling to urge you to schedule a hearing for this bill...&#10;&#10;[Thank them and hang up]" oninput="onInput()"></textarea>
+          <div class="fh" style="margin-top:4px;font-size:11px;color:#9ca3af">Supporters see this as a talking-points card before calling</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── DOWNLOAD ─── -->
+    <div class="panel-section">
+      <div class="fname-wrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        File: <span class="fname" id="fnDisplay">your-org-action.html</span>
+      </div>
+      <div class="action-row">
+        <button class="btn-dl" onclick="doDownload()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download HTML
+        </button>
+        <button class="btn-sample" onclick="loadSample()">Load Sample</button>
+      </div>
+      <div class="success-msg" id="successMsg">
+        <div class="success-title">✓ Action page downloaded!</div>
+        <div class="success-body">Your HTML file is ready. Upload it to any web host, open it in a browser, or share the file directly — it works anywhere.</div>
+      </div>
+    </div>
+
+  </div><!-- /input-panel -->
+
+  <!-- ─── PREVIEW PANEL ─── -->
+  <div class="preview-panel">
+    <div class="preview-bar">
+      <div class="pbar-left">
+        <div class="traffic-lights">
+          <span class="tl tl-r"></span><span class="tl tl-y"></span><span class="tl tl-g"></span>
+        </div>
+        <span class="preview-label">Live Preview</span>
+      </div>
+      <div class="live-badge">
+        <span class="live-dot" id="liveDot"></span>
+        Live
+      </div>
+    </div>
+    <iframe class="preview-iframe" id="previewFrame" title="Action page preview"></iframe>
+  </div>
+
+</div><!-- /layout -->
+
+<script>
+'use strict';
+
+// ── Hawaii Senate committee codes → full names ───────────────────────────────
+const HI_SENATE_COMMITTEES = {
+  AEN: 'Agriculture and Environment',
+  WLA: 'Water, Land, Culture and the Arts',
+  WAM: 'Ways and Means',
+  CPN: 'Commerce and Consumer Protection',
+  JDL: 'Judiciary',
+  HTH: 'Health and Human Services',
+  HRE: 'Housing',
+  EDN: 'Education',
+  EET: 'Energy, Economic Development and Tourism',
+  PSM: 'Public Safety, Intergovernmental and Military Affairs',
+  TRS: 'Transportation',
+  LAT: 'Labor and Technology',
+  GVO: 'Government Operations',
+  HHS: 'Health, Human Services and Housing',
+  LCA: 'Legislative Committees and Assignments',
+};
+
+// ── Hawaii House committee codes
+const HI_HOUSE_COMMITTEES = {
+  AGR: 'Agriculture',
+  CPC: 'Consumer Protection and Commerce',
+  EDN: 'Education',
+  EEP: 'Energy and Environmental Protection',
+  FIN: 'Finance',
+  HLT: 'Health',
+  HMS: 'Human Services',
+  HOU: 'Housing',
+  JHA: 'Judiciary and Hawaiian Affairs',
+  LAT: 'Labor and Tourism',
+  LMR: 'Lower and Middle Income Consumer Relief',
+  PGM: 'Pandemic and Disaster Preparedness',
+  TRN: 'Transportation',
+  WAL: 'Water, Land and Ocean Resources',
+};
+
+const ALL_COMMITTEES = { ...HI_SENATE_COMMITTEES, ...HI_HOUSE_COMMITTEES };
+
+// ── Hawaii committee emails — verified 2026 session (capitol.hawaii.gov) ──────
+// Pattern: [code]committee@capitol.hawaii.gov or [code]testimony@capitol.hawaii.gov
+const HI_COMMITTEE_EMAILS = {
+  // Senate — verified pattern from hearing notices & committee pages
+  WAM: 'wamcommittee@capitol.hawaii.gov',
+  CPN: 'cpncommittee@capitol.hawaii.gov',
+  AEN: 'aencommittee@capitol.hawaii.gov',
+  WLA: 'wlacommittee@capitol.hawaii.gov',
+  JDL: 'jdlcommittee@capitol.hawaii.gov',
+  HTH: 'hthcommittee@capitol.hawaii.gov',
+  HRE: 'hrecommittee@capitol.hawaii.gov',
+  EDN: 'edncommittee@capitol.hawaii.gov',
+  EET: 'eetcommittee@capitol.hawaii.gov',
+  PSM: 'psmcommittee@capitol.hawaii.gov',
+  TRS: 'trscommittee@capitol.hawaii.gov',
+  LAT: 'latcommittee@capitol.hawaii.gov',
+  GVO: 'gvocommittee@capitol.hawaii.gov',
+  // House — same pattern
+  FIN: 'fincommittee@capitol.hawaii.gov',
+  JHA: 'jhacommittee@capitol.hawaii.gov',
+  AGR: 'agrcommittee@capitol.hawaii.gov',
+  EEP: 'eepcommittee@capitol.hawaii.gov',
+};
+
+// ── Committee chair emails — 2026 session (sen[lastname]@capitol.hawaii.gov) ──
+// Source: Hawaii Legislature directory (lrb.hawaii.gov) + senate majority press release
+const HI_COMMITTEE_CHAIRS = {
+  // Committee code → { name, email }
+  WAM: { name: 'Sen. Dela Cruz',      email: 'sendelacruz@capitol.hawaii.gov' },
+  CPN: { name: 'Sen. Keohokalole',    email: 'senkeohokalole@capitol.hawaii.gov' },
+  AEN: { name: 'Sen. Gabbard',        email: 'sengabbard@capitol.hawaii.gov' },
+  WLA: { name: 'Sen. Inouye',         email: 'seninouye@capitol.hawaii.gov' },
+  TRS: { name: 'Sen. Inouye',         email: 'seninouye@capitol.hawaii.gov' },
+  JDL: { name: 'Sen. Rhoads',         email: 'senrhoads@capitol.hawaii.gov' },
+  HTH: { name: 'Sen. San Buenaventura', email: 'sensanbuenaventura@capitol.hawaii.gov' },
+  EDN: { name: 'Sen. Woodson',        email: 'senwoodson@capitol.hawaii.gov' },
+  EET: { name: 'Sen. Lee',            email: 'senlee@capitol.hawaii.gov' },
+  HRE: { name: 'Sen. Elefante',       email: 'senelefante@capitol.hawaii.gov' },
+  PSM: { name: 'Sen. Kim',            email: 'senkim@capitol.hawaii.gov' },
+  LAT: { name: 'Sen. Kidani',         email: 'senkidani@capitol.hawaii.gov' },
+  GVO: { name: 'Sen. Wakai',          email: 'senwakai@capitol.hawaii.gov' },
+};
+
+// ── Hawaii committee phone numbers (verify each session at capitol.hawaii.gov) ──
+const HI_COMMITTEE_PHONES = {
+  // Senate committees — direct committee lines or Senate main desk fallback
+  WAM: '(808) 586-6200',
+  CPN: '(808) 586-6730',
+  AEN: '(808) 586-6760',
+  WLA: '(808) 586-7094',
+  JDL: '(808) 586-6490',
+  HTH: '(808) 586-6780',
+  HRE: '(808) 586-6040',
+  EDN: '(808) 586-6240',
+  EET: '(808) 586-6740',
+  PSM: '(808) 586-7335',
+  TRS: '(808) 586-7330',
+  LAT: '(808) 586-6280',
+  GVO: '(808) 586-6720',
+  // House committees
+  FIN: '(808) 586-6200',
+  JHA: '(808) 586-6490',
+  AGR: '(808) 586-6511',
+  EEP: '(808) 586-6740',
+  // Senate general fallback
+  _SENATE_: '(808) 586-6720',
+  _HOUSE_:  '(808) 586-6400',
+};
+
+// ── Generate 3 email body variants based on stage + fields ───────────────────
+function generateEmailVariants(billNum, summary, stage, committeeNames) {
+  const billRef = billNum || 'this bill';
+
+  // Pull a plain-language reason from the summary (first sentence, cleaned up)
+  const rawReason = summary
+    ? summary.split(/[.!?]/)[0].trim()
+        .replace(/^[A-Z0-9]+\s+(passed[^.]*?and has been|has been|is)\s+/i, '')
+        .replace(/^A public hearing.*?$/i, '')
+        .trim()
+    : '';
+  const reasonLine = rawReason.length > 20
+    ? rawReason.charAt(0).toUpperCase() + rawReason.slice(1).replace(/[.!?]+$/, '') + '.'
+    : '';
+
+  // Stage-specific ask and urgency lines
+  let askDirect = '', askCommunity = '', askConstituent = '', askPersonal = '', askShort = '', urgency = '';
+  if (stage === 'referred') {
+    askDirect     = `I urge your committee to schedule a public hearing for ${billRef} before session ends.`;
+    askCommunity  = `I'm asking your committee to give ${billRef} a public hearing — our community deserves a chance to weigh in.`;
+    askConstituent= `Please schedule a hearing for ${billRef}. Without one, the public has no opportunity to testify on legislation that affects them directly.`;
+    askPersonal   = `scheduling a hearing for ${billRef}`;
+    askShort      = `schedule a hearing for ${billRef} before session ends`;
+    urgency       = `With the session moving quickly, time is short.`;
+  } else if (stage === 'hearing') {
+    askDirect     = `I'm writing to ask for your support on ${billRef} at the upcoming hearing.`;
+    askCommunity  = `I hope you'll carry ${billRef} forward — this is exactly the kind of legislation our community has been asking for.`;
+    askConstituent= `Please support ${billRef} at the hearing. Your vote matters to the many constituents who care about this issue.`;
+    askPersonal   = `supporting ${billRef} at the hearing`;
+    askShort      = `support ${billRef} at the upcoming hearing`;
+    urgency       = `The hearing is coming up and every voice counts.`;
+  } else if (stage === 'passed') {
+    askDirect     = `I'm writing to urge continued support for ${billRef} as it moves through the legislature.`;
+    askCommunity  = `I hope you'll keep ${billRef} moving — the momentum behind it reflects real community need.`;
+    askConstituent= `Please continue supporting ${billRef}. Your constituents are watching and counting on you to see this through.`;
+    askPersonal   = `seeing ${billRef} through to the end`;
+    askShort      = `continue supporting ${billRef} — it's come too far to stall now`;
+    urgency       = `This bill has come too far to stall now.`;
+  } else {
+    askDirect     = `I'm writing to ask that you take up ${billRef} and help move it forward.`;
+    askCommunity  = `I hope you'll take a closer look at ${billRef} — it's an issue our community cares deeply about.`;
+    askConstituent= `Please give ${billRef} the attention it deserves. Your constituents are paying attention this session.`;
+    askPersonal   = `giving ${billRef} the attention it deserves`;
+    askShort      = `take up ${billRef} this session`;
+    urgency       = ``;
+  }
+
+  // V1: Direct & urgent — leads with the ask, states what's at stake
+  const v1 =
+`Aloha,
+
+My name is [Your Name] and I am a resident of [City], Hawaiʻi. ${askDirect}
+
+${reasonLine ? reasonLine + ' ' : ''}${urgency ? urgency + ' ' : ''}If this bill does not receive a hearing, the public loses its chance to weigh in on something that matters to our community.
+
+I respectfully ask that you act before this session closes.
+
+Mahalo,
+[Your Name]
+[City], HI`;
+
+  // V2: Community voice — Hawaii-rooted, values-driven, warm but firm
+  const v2 =
+`Aloha,
+
+I'm [Your Name], a resident of [City]. I'm reaching out because I believe ${billRef} reflects something our community deeply values.
+
+${reasonLine ? reasonLine + ' ' : ''}Hawaiʻi has always led on issues that matter to people — not just to special interests. ${askCommunity}
+
+Mahalo nui loa for the work you do and for listening.
+
+[Your Name]
+[City], HI`;
+
+  // V3: Constituent pressure — democratic process, signals they're watching
+  const v3 =
+`Hi,
+
+I'm [Your Name], a constituent writing to you about ${billRef}.
+
+${reasonLine ? reasonLine + ' ' : ''}${askConstituent} ${urgency}
+
+I'll be following this bill closely, and I know others in our community will too. Thank you for representing us.
+
+[Your Name]
+[City], HI`;
+
+  // V4: Personal story — emotional, first-person stake, most human
+  const v4 =
+`Aloha,
+
+My name is [Your Name] and I live in [City]. I'm writing to you today about ${billRef} because it touches something I care about personally.
+
+${reasonLine ? reasonLine + ' I believe this matters — not just to me, but to families and communities across Hawaiʻi. ' : `This is the kind of legislation that makes a real difference in people's lives. `}I'm asking you to consider ${askPersonal}. Please don't let it die quietly.
+
+With gratitude,
+[Your Name]
+[City], HI`;
+
+  // V5: Short & punchy — for people who want something brief and to the point
+  const v5 =
+`Aloha,
+
+I'm [Your Name], a resident of [City]. I'm writing to ask that you ${askShort}.
+
+${reasonLine ? reasonLine + ' ' : ''}This matters to me and to many in our community.
+
+Mahalo,
+[Your Name]`;
+
+  return [v1, v2, v3, v4, v5];
+}
+
+// ── Generate 3 phone script variants ────────────────────────────────────────
+function generatePhoneScripts(billNum, summary, stage, committeeNames) {
+  const billRef = billNum || 'this bill';
+
+  // Short plain-language reason (first sentence of summary, cleaned)
+  const rawReason = summary
+    ? summary.split(/[.!?]/)[0].trim()
+        .replace(/^[A-Z0-9]+\s+(passed[^.]*?and has been|has been|is)\s+/i, '')
+        .trim()
+    : '';
+  const reasonLine = rawReason.length > 20
+    ? rawReason.charAt(0).toUpperCase() + rawReason.slice(1).replace(/[.!?]+$/, '') + '.'
+    : '';
+
+  // Stage-specific ask
+  let askDirect = '', askCommunity = '', askUrgent = '', askPersonal = '', askShort = '';
+  if (stage === 'referred') {
+    askDirect    = `to urge the committee to schedule a public hearing for ${billRef} before the session ends`;
+    askCommunity = `to ask that ${billRef} receive a public hearing — our community deserves a chance to testify`;
+    askUrgent    = `to ask that a hearing be scheduled for ${billRef} as soon as possible`;
+    askPersonal  = `about ${billRef} — it's something I care about personally`;
+    askShort     = `about ${billRef}`;
+  } else if (stage === 'hearing') {
+    askDirect    = `to ask for the representative's support on ${billRef} at the upcoming hearing`;
+    askCommunity = `to share that our community strongly supports ${billRef} and hopes it moves forward`;
+    askUrgent    = `to urge a yes vote on ${billRef} at the hearing`;
+    askPersonal  = `about ${billRef} — this one is personal to me`;
+    askShort     = `about ${billRef}`;
+  } else if (stage === 'passed') {
+    askDirect    = `to ask that ${billRef} continue to receive support as it moves through the legislature`;
+    askCommunity = `to say how much our community appreciates the progress on ${billRef} and hopes it crosses the finish line`;
+    askUrgent    = `to urge continued support for ${billRef} — this bill has come too far to stall`;
+    askPersonal  = `about ${billRef} and why it matters to me and my family`;
+    askShort     = `about ${billRef}`;
+  } else {
+    askDirect    = `to ask that the committee take up ${billRef} this session`;
+    askCommunity = `to share that our community cares about ${billRef} and hopes it gets the attention it deserves`;
+    askUrgent    = `to ask that ${billRef} be prioritized before session ends`;
+    askPersonal  = `about ${billRef} — it's something that affects people I know`;
+    askShort     = `about ${billRef}`;
+  }
+
+  // V1: Direct & clear
+  const v1 =
+`Hi, my name is [Your Name] and I'm a resident of [City], Hawaiʻi.
+
+I'm calling ${askDirect}.
+
+${reasonLine ? reasonLine + ' ' : ''}This is important to me and to many in my community, and I wanted my voice counted.
+
+Mahalo for your time.`;
+
+  // V2: Community voice — warm, values-driven
+  const v2 =
+`Aloha — my name is [Your Name] and I live in [City].
+
+I'm calling ${askCommunity}.
+
+${reasonLine ? reasonLine + ' ' : ''}Hawaiʻi has a chance to lead on this, and I hope the committee will act.
+
+Mahalo nui loa.`;
+
+  // V3: Urgent constituent
+  const v3 =
+`Hi, I'm [Your Name], a constituent calling from [City].
+
+I'm calling ${askUrgent}. ${reasonLine ? reasonLine + ' ' : ''}
+
+I'll be following this closely, and I know others in my community will too. Thank you for representing us.`;
+
+  // V4: Personal story — emotional, human connection to the issue
+  const v4 =
+`Aloha, my name is [Your Name] and I'm calling ${askPersonal}.
+
+${reasonLine ? reasonLine + ' ' : ''}I don't usually make calls like this, but this bill is worth it. I hope you'll give it serious consideration.
+
+Thank you so much for your time. Have a wonderful day.`;
+
+  // V5: Short & punchy — quick, confident, easy to say
+  const v5 =
+`Hi, I'm [Your Name] from [City].
+
+I'm calling ${askShort} to ask for your support. ${reasonLine ? reasonLine + ' ' : ''}This matters to our community.
+
+Mahalo.`;
+
+  return [v1, v2, v3, v4, v5];
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function $id(id) { return document.getElementById(id); }
+
+function getFields() {
+  return {
+    org:      $id('fOrg').value.trim(),
+    campaign: $id('fCampaign').value.trim(),
+    headline: $id('fHeadline').value.trim(),
+    summary:  $id('fSummary').value.trim(),
+    email:    $id('fEmail').value.trim(),
+    subject:  $id('fSubject').value.trim(),
+    phone:    $id('fPhone').value.trim(),
+    link:     $id('fLink').value.trim(),
+    email2:     $id('fCCEmail').value.trim(),
+    emailBody: $id('fEmailBody').value.trim(),
+    phoneScript: $id('fPhoneScript').value.trim(),
+  };
+}
+
+function setFieldVal(id, val) {
+  if (!val) return;
+  const el = $id(id);
+  if (val === el.value) return;
+  el.value = val;
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+function slugify(s) {
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s\-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-{2,}/g, '-')
+    .slice(0, 50)
+    .replace(/^-+|-+$/g, '');
+}
+
+function esc(s) {
+  return (s || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── LegiScan API Integration ──────────────────────────────────────────────────
+const LEGISCAN_KEY = '6c858660f00b125a82929cda797ab0c1';
+
+// LegiScan numeric status codes → our internal stage labels
+// Ref: https://legiscan.com/misc/LegiScan_API_User_Manual.pdf
+const LS_STATUS_MAP = {
+  1:  'intro',    // Introduced
+  12: 'intro',    // Draft
+  9:  'referred', // Refer (referred to committee)
+  10: 'hearing',  // Report Pass (passed out of committee / hearing scheduled)
+  2:  'passed',   // Engrossed (passed one chamber)
+  3:  'passed',   // Enrolled (passed both chambers)
+  4:  'passed',   // Passed
+  7:  'passed',   // Veto Override
+  8:  'passed',   // Chaptered / Signed into law
+  5:  'general',  // Vetoed
+  6:  'general',  // Failed / Dead
+  11: 'general',  // Report DNP (committee did not pass)
+};
+
+function showLsNotice(type, html) {
+  const el = $id('lsNotice');
+  el.className = 'rss-notice show ' + type;
+  el.innerHTML = html;
+}
+function hideLsNotice() {
+  const el = $id('lsNotice');
+  el.className = 'rss-notice';
+  el.innerHTML = '';
+}
+
+// Helper: fetch with an AbortController-based timeout
+function fetchWithTimeout(url, options, ms) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { ...options, signal: ctrl.signal })
+    .finally(() => clearTimeout(id));
+}
+
+// Fetch from LegiScan — tries direct CORS first, then races two CORS proxies
+async function legiScanFetch(params) {
+  const qs = new URLSearchParams({ key: LEGISCAN_KEY, ...params }).toString();
+  const url = 'https://api.legiscan.com/?' + qs;
+
+  // 1. Try direct (fast — CORS failures are near-instant)
+  try {
+    const r = await fetchWithTimeout(url, { mode: 'cors' }, 5000);
+    if (r.ok) {
+      const json = await r.json();
+      if (json.status === 'OK') return json;
+    }
+  } catch (_) {}
+
+  // 2. Race both CORS proxies in parallel
+  const enc = encodeURIComponent(url);
+  const proxyRace = (proxyUrl) =>
+    fetchWithTimeout(proxyUrl, {}, 9000)
+      .then(r => { if (!r.ok) throw new Error('not ok'); return r.json(); })
+      .then(json => { if (!json || json.status !== 'OK') throw new Error('bad response'); return json; });
+
+  try {
+    return await Promise.any([
+      proxyRace('https://api.allorigins.win/raw?url=' + enc),
+      proxyRace('https://api.codetabs.com/v1/proxy/?quest=' + enc),
+    ]);
+  } catch (_) {}
+
+  return null;
+}
+
+async function lookupLegiScan() {
+  const raw = $id('lsBillNum').value.trim().toUpperCase().replace(/\s+/g, '');
+  if (!raw) {
+    showLsNotice('warn', 'Enter a bill number first — e.g. <strong>HB1234</strong> or <strong>SB567</strong>.');
+    return;
+  }
+
+  // Validate format: HB/SB/HCR/SCR/HCM/SCM + digits (strip trailing SD1/HD1 suffixes automatically)
+  const cleanRaw = raw.replace(/[SH]D\d*$/, ''); // strip any "SD1", "HD2", etc. suffix
+  const billMatch = cleanRaw.match(/^([HS][BCR][MR]?)(\d+)$/);
+  if (!billMatch) {
+    showLsNotice('warn', 'Enter a valid Hawaii bill number (e.g. HB1234, SB567, HCR45, SCR12).');
+    return;
+  }
+
+  const btn = $id('lsBtn');
+  btn.textContent = 'Looking up\u2026';
+  btn.disabled = true;
+  hideLsNotice();
+
+  try {
+    // Step 1: search by bill number in Hawaii
+    // LegiScan requires a space between prefix and number ("HB 1234") for exact matching
+    const lsQuery = billMatch[1] + ' ' + billMatch[2];
+    const searchResult = await legiScanFetch({ op: 'getSearch', state: 'HI', query: lsQuery });
+    if (!searchResult) {
+      throw new Error('Could not reach the LegiScan API. Check your internet connection and try again.');
+    }
+
+    const results = searchResult.searchresult || {};
+    const bills = Object.values(results).filter(r => r && typeof r === 'object' && r.bill_id);
+    if (!bills.length) {
+      throw new Error('No Hawaii bill found matching \u201C' + raw + '\u201D. Double-check the bill number and try again.');
+    }
+
+    // Prefer exact match on bill_number (stored as "HB1234" or "HB 1234" depending on session)
+    const norm = s => (s || '').replace(/\s+/g, '').toUpperCase();
+    const exact = bills.find(b => norm(b.bill_number) === raw);
+    const match = exact || bills[0];
+
+    // Step 2: get full bill details (title, history, committee, etc.)
+    const billResult = await legiScanFetch({ op: 'getBill', id: match.bill_id });
+    if (!billResult) {
+      throw new Error('Found the bill but could not load its details. Please try again.');
+    }
+
+    applyLegiScanData(billResult.bill);
+    const displayNum = (billResult.bill.bill_number || '').trim();
+    const lastAction = billResult.bill.last_action || billResult.bill.last_action_date || 'details imported';
+    showLsNotice('ok', '\u2713 Loaded ' + displayNum + ' \u2014 ' + esc(lastAction));
+
+  } catch (err) {
+    showLsNotice('error', esc(err.message));
+  } finally {
+    btn.textContent = 'Look Up';
+    btn.disabled = false;
+  }
+}
+
+function applyLegiScanData(bill) {
+  const statusCode = bill.status || 1;
+  const stage = LS_STATUS_MAP[statusCode] || 'general';
+  const billNum = (bill.bill_number || '').replace(/\s+/g, '');
+
+  // Committee info (LegiScan provides a committee object on getBill)
+  // committee.chamber is "H" or "S" — prefix the name for clarity
+  const committee = bill.committee;
+  const cmtRaw = committee ? (committee.name || committee.committee_name || '') : '';
+  const cmtChamber = committee ? (committee.chamber === 'S' ? 'Senate' : committee.chamber === 'H' ? 'House' : '') : '';
+  const committeeName = cmtRaw ? (cmtChamber ? cmtChamber + ' ' + cmtRaw : cmtRaw) : '';
+  const committeeNames = committeeName ? [committeeName] : [];
+
+  // Bill title (use description as fallback)
+  const billTitle = (bill.title || bill.description || '').trim();
+  const campaignName = billNum + (billTitle ? ' \u2013 ' + billTitle.slice(0, 75) : '');
+
+  // Generate headline / summary / subject based on stage
+  let headline = '', summary = '', subject = '';
+  const cmtFull = committeeName ? 'the ' + committeeName : 'the Committee';
+
+  if ((stage === 'referred' || stage === 'intro') && committeeName) {
+    headline = 'Urge ' + cmtFull + ' to Schedule a Public Hearing on ' + billNum;
+    summary  = billNum + (billTitle ? ' (\u201C' + billTitle + '\u201D)' : '')
+             + ' has been referred to ' + cmtFull + '. A public hearing must be scheduled for this bill to advance. '
+             + 'Contact the committee today and urge them to act.';
+    subject  = 'Please Schedule a Public Hearing on ' + billNum;
+
+  } else if (stage === 'intro') {
+    headline = 'Urge the Legislature to Advance ' + billNum;
+    summary  = billNum + (billTitle ? ' \u2014 ' + billTitle : '')
+             + ' has been introduced in the Hawaii Legislature. '
+             + 'Contact your representatives today to show your support and urge them to advance this bill.';
+    subject  = 'Please Support ' + billNum;
+
+  } else if (stage === 'hearing') {
+    headline = 'Submit Testimony in Support of ' + billNum;
+    summary  = 'A hearing on ' + billNum + ' has been scheduled'
+             + (committeeName ? ' in ' + cmtFull : '')
+             + '. Submit your written testimony now \u2014 every voice on the record matters.';
+    subject  = 'Written Testimony in Support of ' + billNum;
+
+  } else if (stage === 'passed') {
+    headline = billNum + ' Passed \u2014 Keep the Momentum Going';
+    summary  = billNum + ' has cleared a key vote and continues through the legislature. '
+             + 'Contact your representatives to keep it moving forward.';
+    subject  = 'Please Support ' + billNum;
+
+  } else {
+    headline = 'Take Action on ' + billNum;
+    summary  = billNum + (billTitle ? ' \u2014 ' + billTitle : '')
+             + ' is moving through the Hawaii Legislature. '
+             + 'Your email and call to your representatives can make a real difference.';
+    subject  = 'Please Support ' + billNum;
+  }
+
+  setFieldVal('fCampaign', campaignName);
+  setFieldVal('fHeadline', headline);
+  setFieldVal('fSummary',  summary);
+  setFieldVal('fSubject',  subject);
+  if (bill.url) setFieldVal('fLink', bill.url);
+
+  // Auto-generate email body and phone script
+  const emailVars = generateEmailVariants(billNum, summary, stage, committeeNames);
+  setFieldVal('fEmailBody', emailVars[0]);
+  const phoneVars = generatePhoneScripts(billNum, summary, stage, committeeNames);
+  setFieldVal('fPhoneScript', phoneVars[0]);
+
+  // ── Auto-fill email / phone / chair from committee lookup tables ──
+  // Reverse-lookup: find the committee code whose name matches what LegiScan returned
+  if (committee && cmtRaw) {
+    const lookupTable = committee.chamber === 'S' ? HI_SENATE_COMMITTEES : HI_HOUSE_COMMITTEES;
+    const primaryCode = Object.keys(lookupTable).find(
+      k => lookupTable[k].toLowerCase() === cmtRaw.toLowerCase()
+    );
+
+    if (primaryCode) {
+      // Committee email
+      const autoEmail = HI_COMMITTEE_EMAILS[primaryCode];
+      if (autoEmail) setFieldVal('fEmail', autoEmail);
+
+      // Chair CC email
+      const chair = HI_COMMITTEE_CHAIRS[primaryCode];
+      if (chair) setFieldVal('fCCEmail', chair.email);
+
+      // Committee phone — fall back to chamber main line
+      const autoPhone = HI_COMMITTEE_PHONES[primaryCode]
+        || (committee.chamber === 'H' ? HI_COMMITTEE_PHONES['_HOUSE_'] : HI_COMMITTEE_PHONES['_SENATE_'])
+        || '(808) 586-6720';
+      setFieldVal('fPhone', autoPhone);
+    }
+  }
+
+  // ── Bill status bar ──
+  $id('bsbBillNum').textContent = billNum;
+  const badge = $id('bsbBadge');
+  const stageLabels = {
+    referred: 'Awaiting Hearing',
+    hearing:  'Hearing Scheduled',
+    passed:   'Passed',
+    intro:    'Introduced',
+    general:  'In Progress',
+  };
+  badge.textContent = stageLabels[stage] || 'In Progress';
+  badge.className = 'stage-badge ' + (stage === 'general' ? 'intro' : stage);
+
+  // Committee chips
+  const chips = $id('committeChips');
+  chips.innerHTML = committeeNames.length
+    ? committeeNames.map(n => '<span class="cmt-chip">' + esc(n) + '</span>').join('')
+    : '';
+
+  // Timeline from LegiScan history array (most recent first)
+  const tl = $id('timelineItems');
+  const history = (bill.history || []).slice().reverse();
+  tl.innerHTML = history.map(h =>
+    '<div class="timeline-item">'
+    + '<span class="ti-date">' + esc(h.date || '') + '</span>'
+    + '<span class="ti-text">' + esc(h.action || '') + '</span>'
+    + '</div>'
+  ).join('');
+
+  $id('billStatusBar').classList.add('show');
+  updateFilename();
+  schedulePreview();
+}
+
+// ── Timeline toggle ───────────────────────────────────────────────────────────
+let timelineOpen = false;
+function toggleTimeline() {
+  timelineOpen = !timelineOpen;
+  $id('timelineItems').style.display = timelineOpen ? 'block' : 'none';
+  $id('timelineToggleBtn').textContent = timelineOpen ? 'History ▴' : 'History ▾';
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+let previewTimer = null;
+
+function onInput() { updateFilename(); schedulePreview(); }
+
+function updateFilename() {
+  const org = $id('fOrg').value.trim();
+  const campaign = $id('fCampaign').value.trim();
+  const base = slugify(org) || slugify(campaign) || 'action';
+  $id('fnDisplay').textContent = base + '-action.html';
+
+}
+
+function schedulePreview() {
+  const dot = $id('liveDot');
+  dot.classList.add('busy');
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(() => {
+    renderPreview();
+    dot.classList.remove('busy');
+  }, 220);
+}
+
+function renderPreview() {
+  $id('previewFrame').srcdoc = buildOutputHTML(getFields());
+}
+
+// ── Download ──────────────────────────────────────────────────────────────────
+function doDownload() {
+  const f = getFields();
+  const html = buildOutputHTML(f);
+  const base = slugify(f.org) || slugify(f.campaign) || 'action';
+  const filename = base + '-action.html';
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+
+  const msg = $id('successMsg');
+  msg.classList.add('show');
+  clearTimeout(msg._t);
+  msg._t = setTimeout(() => msg.classList.remove('show'), 9000);
+}
+
+// ── Sample ────────────────────────────────────────────────────────────────────
+function loadSample() {
+  $id('lsBillNum').value = 'SB2925';
+  lookupLegiScan();
+}
+
+// ── Output HTML Builder ───────────────────────────────────────────────────────
+function buildOutputHTML(f) {
+  const org      = f.org      || '';
+  const campaign = f.campaign || '';
+  const headline = f.headline || 'Take Action';
+  const summary  = f.summary  || 'Use the buttons below to contact your representative directly.';
+  const email    = f.email    || '';
+  const subject  = f.subject  || '';
+  const phone    = f.phone    || '';
+  const link     = f.link     || '';
+  const email2     = f.email2    || '';  // CC
+  const phoneScript = f.phoneScript || '';
+
+  // ── Email body variants ───────────────────────────────────────────────────
+  // Try to detect stage from headline/subject text for variant generation
+  let autoStage = 'general';
+  if (/hearing/i.test(headline + subject))    autoStage = 'referred';
+  else if (/testimony/i.test(headline))       autoStage = 'hearing';
+  else if (/passed/i.test(headline))          autoStage = 'passed';
+
+  const generatedVariants = generateEmailVariants(campaign, summary, autoStage, []);
+  const emailBodyA = f.emailBody && f.emailBody.trim() ? f.emailBody.trim() : generatedVariants[0];
+  const variantsJson = JSON.stringify([emailBodyA, ...generatedVariants.slice(1)]);
+
+  // ── Phone script variants ─────────────────────────────────────────────────
+  let autoStagePhone = autoStage; // reuse stage detection from above
+  const generatedPhoneScripts = generatePhoneScripts(campaign, summary, autoStagePhone, []);
+  const phoneScriptA = phoneScript && phoneScript.trim() ? phoneScript.trim() : generatedPhoneScripts[0];
+  const phoneScriptsJson = JSON.stringify([phoneScriptA, ...generatedPhoneScripts.slice(1)]);
+
+  const telHref = phone ? 'tel:' + phone.replace(/[^0-9+]/g, '') : '#';
+
+  const badgeHTML = campaign
+    ? `<div class="badge">${esc(campaign)}</div>` : '';
+
+  // Hero "Email" button scrolls to the composer
+  const emailBtn = email ? `
+    <a href="#email-composer" class="btn btn-email" onclick="document.getElementById('email-composer').scrollIntoView({behavior:'smooth'});return false;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      Email Now
+    </a>` : '';
+
+  const phoneBtn = phone ? `
+    <a href="#phone-script" class="btn btn-call" onclick="document.getElementById('phone-script').scrollIntoView({behavior:'smooth'});return false;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 14a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3.18h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 10.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.81.7A2 2 0 0 1 21.73 18z"/></svg>
+      Call Now
+    </a>` : '';
+
+  const linkBtn = link ? `
+    <a href="${esc(link)}" target="_blank" rel="noopener noreferrer" class="btn btn-link">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Official Page
+    </a>` : '';
+
+  const noActions = (!email && !phone && !link)
+    ? `<p style="color:#6e7681;font-style:italic;font-size:14px;">Add contact info to enable action buttons.</p>`
+    : '';
+
+
+  // ── Email Composer Section (only shown when email is present) ─────────────
+  const emailComposerSection = email ? `
+<div class="hdiv"></div>
+<section class="ec-section" id="email-composer">
+  <div class="ec-inner">
+    <div class="ec-header">
+      <div>
+        <div class="section-mini-label">Your Email</div>
+        <p class="ec-desc">This message is pre-written — feel free to personalize it, then send or copy it below.</p>
+      </div>
+      <span class="ec-badge" id="ec-badge">Version 1 of 3</span>
+    </div>
+    <div class="ec-meta">
+      <div class="ec-meta-row">
+        <span class="ec-meta-label">To</span>
+        <span class="ec-meta-val">${esc(email)}</span>
+      </div>${email2 ? `
+      <div class="ec-meta-row">
+        <span class="ec-meta-label">CC</span>
+        <span class="ec-meta-val">${esc(email2)}</span>
+      </div>` : ''}${subject ? `
+      <div class="ec-meta-row">
+        <span class="ec-meta-label">Subject</span>
+        <span class="ec-meta-val">${esc(subject)}</span>
+      </div>` : ''}
+    </div>
+    <textarea id="ec-body" class="ec-body" spellcheck="true" aria-label="Email message body"></textarea>
+    <div class="ec-actions">
+      <button onclick="shuffleVariant()" class="ec-btn ec-btn-shuffle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Try a different version
+      </button>
+      <button onclick="copyEmail()" id="ec-copy-btn" class="ec-btn ec-btn-copy">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy email text
+      </button>
+      <a href="#" onclick="sendEmail(event)" class="ec-btn ec-btn-send">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        Open in email app
+      </a>
+    </div>
+  </div>
+</section>` : '';
+
+  // ── Phone Script Section ──────────────────────────────────────────────────
+  const phoneComposerSection = phone ? `
+<div class="hdiv"></div>
+<section class="ps-section" id="phone-script">
+  <div class="ps-inner">
+    <div class="ps-header">
+      <div>
+        <div class="section-mini-label">Your Phone Script</div>
+        <p class="ps-desc">Read this before calling — or jot down your own notes. Calls are counted and effective.</p>
+      </div>
+      <span class="ps-badge" id="ps-badge">Script 1 of 3</span>
+    </div>
+    <a href="${esc(telHref)}" class="ps-call-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 14a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3.18h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 10.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.81.7A2 2 0 0 1 21.73 18z"/></svg>
+      <div class="ps-call-inner">
+        <span class="ps-call-label">Call now</span>
+        <span class="ps-call-num">${esc(phone)}</span>
+      </div>
+      <svg class="ps-call-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+    <div class="ps-script-wrap">
+      <div class="ps-script-label">What to say</div>
+      <div id="ps-script" class="ps-script"></div>
+    </div>
+    <div class="ps-actions">
+      <button onclick="shuffleScript()" class="ec-btn ec-btn-shuffle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Try a different script
+      </button>
+      <button onclick="copyScript()" id="ps-copy-btn" class="ec-btn ec-btn-copy">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy script
+      </button>
+    </div>
+  </div>
+</section>` : '';
+
+  const emailRow = email ? `
+    <div class="ci-row">
+      <div class="ci-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+      <div><div class="ci-label">Email</div><a href="mailto:${esc(email)}" class="ci-val">${esc(email)}</a></div>
+    </div>` : '';
+
+  const phoneRow = phone ? `
+    <div class="ci-row">
+      <div class="ci-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 14a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3.18h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 10.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.81.7A2 2 0 0 1 21.73 18z"/></svg></div>
+      <div><div class="ci-label">Phone</div><a href="${esc(telHref)}" class="ci-val">${esc(phone)}</a></div>
+    </div>` : '';
+
+  const contactSection = (email || phone) ? `
+    <div class="contact-wrap">
+      <div class="contact-inner">
+        <div class="section-mini-label">Contact Information</div>
+        ${emailRow}${phoneRow}
+      </div>
+    </div>` : '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(headline)} – Take Action</title>
+<meta name="description" content="${esc(summary)}">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0d1117;color:#f0f6fc;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+nav{background:#161b22;border-bottom:1px solid #30363d;padding:0 28px;height:52px;display:flex;align-items:center;flex-shrink:0}
+.org{font-size:14px;font-weight:700;color:#f0f6fc;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
+.org-dot{width:8px;height:8px;border-radius:50%;background:#3fb950;flex-shrink:0}
+.hero{padding:72px 28px 56px;text-align:center;max-width:800px;margin:0 auto;width:100%}
+.badge{display:inline-block;padding:4px 14px;background:rgba(56,139,253,.1);border:1px solid rgba(56,139,253,.3);border-radius:20px;font-size:12px;font-weight:600;color:#58a6ff;letter-spacing:.5px;text-transform:uppercase;margin-bottom:22px}
+h1{font-size:clamp(26px,5vw,48px);font-weight:800;line-height:1.17;letter-spacing:-.6px;color:#f0f6fc;margin-bottom:20px}
+.summary{font-size:17px;line-height:1.75;color:#8b949e;max-width:600px;margin:0 auto 40px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:8px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:15px 32px;border-radius:9px;font-size:16px;font-weight:700;text-decoration:none;transition:opacity .15s,transform .12s,box-shadow .15s;letter-spacing:-.2px;line-height:1;white-space:nowrap;border:none;cursor:pointer}
+.btn:hover{opacity:.88;transform:translateY(-1px)}.btn:active{transform:scale(.98);opacity:1}
+.btn-email{background:#238636;color:#fff;box-shadow:0 2px 8px rgba(35,134,54,.3)}
+.btn-email:hover{box-shadow:0 4px 16px rgba(35,134,54,.4)}
+.btn-call{background:#1f6feb;color:#fff;box-shadow:0 2px 8px rgba(31,111,235,.3)}
+.btn-call:hover{box-shadow:0 4px 16px rgba(31,111,235,.4)}
+.btn-link{background:transparent;color:#58a6ff;border:1.5px solid rgba(56,139,253,.4);padding:14px 28px}
+.btn-link:hover{background:rgba(56,139,253,.08);border-color:rgba(56,139,253,.6)}
+.hdiv{border-top:1px solid #21262d}
+/* ── Email Composer ── */
+.ec-section{padding:52px 28px;background:#0d1117}
+.ec-inner{max-width:680px;margin:0 auto}
+.ec-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+.ec-desc{font-size:14px;color:#6e7681;margin-top:5px;line-height:1.5}
+.ec-badge{flex-shrink:0;font-size:11px;font-weight:700;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:20px;padding:5px 12px;white-space:nowrap;letter-spacing:.3px}
+.ec-meta{background:#161b22;border:1px solid #30363d;border-radius:8px 8px 0 0;padding:12px 16px;display:flex;flex-direction:column;gap:9px}
+.ec-meta-row{display:flex;gap:12px;align-items:baseline;font-size:13px}
+.ec-meta-label{color:#6e7681;font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:10px;min-width:52px;flex-shrink:0;padding-top:1px}
+.ec-meta-val{color:#8b949e;word-break:break-all;font-size:13px}
+.ec-body{width:100%;min-height:240px;padding:16px;background:#161b22;border:1px solid #30363d;border-top:1px solid #21262d;border-radius:0 0 8px 8px;color:#c9d1d9;font-family:inherit;font-size:14px;line-height:1.75;resize:vertical;transition:border-color .2s}
+.ec-body:focus{outline:none;border-color:#388bfd;box-shadow:0 0 0 3px rgba(56,139,253,.12)}
+@keyframes ec-fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ec-body.ec-anim{animation:ec-fade .28s ease}
+.ec-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.ec-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;border:none;line-height:1;white-space:nowrap}
+.ec-btn:hover{transform:translateY(-1px)}.ec-btn:active{transform:scale(.98)}
+.ec-btn-shuffle{background:#161b22;color:#8b949e;border:1px solid #30363d}
+.ec-btn-shuffle:hover{background:#21262d;color:#c9d1d9;border-color:#484f58}
+.ec-btn-copy{background:#238636;color:#fff}
+.ec-btn-copy:hover{background:#2ea043;box-shadow:0 3px 10px rgba(35,134,54,.3)}
+.ec-btn-send{background:#1f6feb;color:#fff}
+.ec-btn-send:hover{background:#388bfd;box-shadow:0 3px 10px rgba(31,111,235,.3)}
+/* ── Contact + About ── */
+.contact-wrap{padding:36px 28px;max-width:560px;margin:0 auto;width:100%}
+.section-mini-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6e7681;margin-bottom:14px}
+.ci-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #21262d}
+.ci-row:last-child{border-bottom:none}
+.ci-icon{width:36px;height:36px;background:#161b22;border:1px solid #30363d;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#8b949e}
+.ci-label{font-size:10px;color:#6e7681;text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}
+.ci-val{color:#58a6ff;text-decoration:none;font-size:14px;font-weight:500;word-break:break-all}
+.ci-val:hover{text-decoration:underline}
+.about{background:#161b22;border-top:1px solid #21262d;padding:48px 28px;text-align:center;margin-top:auto}
+.about-inner{max-width:560px;margin:0 auto}
+.about h2{font-size:20px;font-weight:700;color:#f0f6fc;margin-bottom:12px}
+.about p{font-size:15px;line-height:1.8;color:#8b949e}
+footer{background:#0d1117;border-top:1px solid #21262d;padding:16px 28px;text-align:center;font-size:12px;color:#484f58}
+@media(max-width:600px){.hero{padding:48px 20px 40px}h1{font-size:28px}.summary{font-size:15px}.btn{width:100%;justify-content:center;font-size:15px;padding:15px 24px}.actions{flex-direction:column;align-items:stretch}.ec-section{padding:36px 20px}.ec-header{flex-direction:column;gap:10px}.ec-actions{flex-direction:column}.ec-btn{justify-content:center}.contact-wrap,footer{padding:28px 20px}.about{padding:36px 20px}.ps-section{padding:36px 20px}.ps-header{flex-direction:column;gap:10px}.ps-actions{flex-direction:column}.ps-call-btn{padding:18px 20px}}
+/* ── Phone Script Section ── */
+.ps-section{padding:52px 28px;background:#0d1117}
+.ps-inner{max-width:680px;margin:0 auto}
+.ps-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+.ps-desc{font-size:14px;color:#6e7681;margin-top:5px;line-height:1.5}
+.ps-badge{flex-shrink:0;font-size:11px;font-weight:700;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:20px;padding:5px 12px;white-space:nowrap;letter-spacing:.3px}
+.ps-call-btn{display:flex;align-items:center;gap:16px;padding:20px 24px;background:linear-gradient(135deg,#1a7f37 0%,#238636 100%);border-radius:12px;text-decoration:none;color:#fff;transition:all .2s;margin-bottom:20px;box-shadow:0 4px 16px rgba(35,134,54,.25)}
+.ps-call-btn:hover{background:linear-gradient(135deg,#2ea043 0%,#3fb950 100%);transform:translateY(-2px);box-shadow:0 6px 24px rgba(35,134,54,.35)}
+.ps-call-btn svg:first-child{width:28px;height:28px;flex-shrink:0;opacity:.9}
+.ps-call-inner{flex:1}
+.ps-call-label{font-size:12px;font-weight:600;opacity:.75;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:3px}
+.ps-call-num{font-size:22px;font-weight:800;letter-spacing:-.3px;display:block}
+.ps-call-arrow{flex-shrink:0;opacity:.6}
+.ps-script-wrap{background:#161b22;border:1px solid #30363d;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.ps-script-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6e7681;padding:10px 16px 8px;border-bottom:1px solid #21262d}
+.ps-script{padding:16px;color:#c9d1d9;font-size:14px;line-height:1.9;white-space:pre-wrap;font-family:inherit}
+.ps-script.ps-anim{animation:ec-fade .28s ease}
+.ps-actions{display:flex;flex-wrap:wrap;gap:10px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="org">
+    <span class="org-dot"></span>
+    ${org ? esc(org) : '<span style="color:#484f58;font-weight:400">Your Organization</span>'}
+  </div>
+</nav>
+<section class="hero">
+  ${badgeHTML}
+  <h1>${esc(headline)}</h1>
+  <p class="summary">${esc(summary)}</p>
+  <div class="actions">
+    ${emailBtn}${phoneBtn}${linkBtn}${noActions}
+  </div>
+</section>
+${emailComposerSection}
+${phoneComposerSection}
+${(email || phone) ? '<div class="hdiv"></div>' + contactSection : ''}
+<div class="hdiv"></div>
+<section class="about">
+  <div class="about-inner">
+    <h2>Why take action?</h2>
+    <p>This page makes it as easy as possible for you to reach your representatives. Elected officials track constituent contact volume — every email and every call gets counted. Your voice makes a real difference.</p>
+  </div>
+</section>
+<footer>${org ? esc(org) + ' &middot; ' : ''}Made with Action Page Generator</footer>
+<script>
+(function(){
+  const emailVariants = ${variantsJson};
+  const emailTo      = ${JSON.stringify(email)};
+  const emailCC      = ${JSON.stringify(email2)};
+  const emailSubject = ${JSON.stringify(subject)};
+  let currentVariant = 0;
+
+
+  // Initialise textarea
+  const ta = document.getElementById('ec-body');
+  if (ta) ta.value = emailVariants[0];
+
+  window.shuffleVariant = function() {
+    currentVariant = (currentVariant + 1) % emailVariants.length;
+    if (!ta) return;
+    ta.classList.remove('ec-anim');
+    void ta.offsetWidth;
+    ta.classList.add('ec-anim');
+    ta.value = emailVariants[currentVariant];
+    const badge = document.getElementById('ec-badge');
+    if (badge) badge.textContent = 'Version ' + (currentVariant + 1) + ' of ' + emailVariants.length;
+  };
+
+  window.copyEmail = function() {
+    const text = ta ? ta.value : '';
+    const btn = document.getElementById('ec-copy-btn');
+    const origLabel = btn ? btn.innerHTML : '';
+    function showOk() {
+      if (!btn) return;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><\/svg> Copied!';
+      setTimeout(() => { btn.innerHTML = origLabel; }, 2600);
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(showOk).catch(() => { legacyCopy(text); showOk(); });
+    } else {
+      legacyCopy(text); showOk();
+    }
+  };
+
+  function legacyCopy(text) {
+    if (!ta) return;
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+  }
+
+  window.sendEmail = function(e) {
+    e.preventDefault();
+    const body = ta ? ta.value : emailVariants[0];
+    let href = 'mailto:' + encodeURIComponent(emailTo);
+    const params = [];
+    if (emailCC)      params.push('cc=' + encodeURIComponent(emailCC));
+    if (emailSubject) params.push('subject=' + encodeURIComponent(emailSubject));
+    if (body) params.push('body=' + encodeURIComponent(body.substring(0, 1800)));
+    if (params.length) href += '?' + params.join('&');
+    window.location.href = href;
+  };
+
+  // ── Phone Script Logic ──
+  const phoneScripts = ${phoneScriptsJson};
+  let currentScript = 0;
+  const psEl = document.getElementById('ps-script');
+  if (psEl) psEl.textContent = phoneScripts[0];
+
+  window.shuffleScript = function() {
+    currentScript = (currentScript + 1) % phoneScripts.length;
+    if (!psEl) return;
+    psEl.classList.remove('ps-anim');
+    void psEl.offsetWidth;
+    psEl.classList.add('ps-anim');
+    psEl.textContent = phoneScripts[currentScript];
+    const badge = document.getElementById('ps-badge');
+    if (badge) badge.textContent = 'Script ' + (currentScript + 1) + ' of ' + phoneScripts.length;
+  };
+
+  window.copyScript = function() {
+    const text = psEl ? psEl.textContent : '';
+    const btn = document.getElementById('ps-copy-btn');
+    const origLabel = btn ? btn.innerHTML : '';
+    function showOk() {
+      if (!btn) return;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><\/svg> Copied!';
+      setTimeout(() => { btn.innerHTML = origLabel; }, 2600);
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(showOk).catch(() => { document.execCommand('copy'); showOk(); });
+    } else {
+      showOk();
+    }
+  };
+
+
+})();
+<\/script>
+</body>
+</html>`;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderPreview();
+updateFilename();
+</script>
+
+</body>
+</html>
