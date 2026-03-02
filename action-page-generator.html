@@ -185,7 +185,10 @@
     .stage-badge.referred { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
     .stage-badge.passed   { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
     .stage-badge.hearing  { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
-    .stage-badge.intro    { background: var(--surface); color: var(--text-3); border: 1px solid var(--border); }
+    .stage-badge.intro      { background: var(--surface); color: var(--text-3); border: 1px solid var(--border); }
+    .stage-badge.committee  { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+    .stage-badge.floor      { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .stage-badge.governor   { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
     .timeline-toggle {
       font-size: 11px; color: var(--text-3); background: none; border: none;
       cursor: pointer; padding: 2px 6px; border-radius: 4px;
@@ -288,6 +291,128 @@
     .success-title { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 3px; }
     .success-body { font-size: 12px; color: #166534; line-height: 1.6; }
 
+    /* ── Share Kit ── */
+    .share-kit {
+      margin-top: 20px; padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+    .share-kit-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 10px;
+    }
+    .share-url-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .share-url-row input {
+      flex: 1; height: 36px; padding: 0 10px;
+      border: 1px solid var(--border-input); border-radius: var(--r6);
+      font-family: var(--f); font-size: 13px; color: var(--text);
+      background: var(--surface);
+    }
+    .share-url-row input:focus { outline: none; border-color: var(--accent); }
+    .btn-gen-share {
+      height: 36px; padding: 0 14px;
+      background: var(--accent); color: white; border: none;
+      border-radius: var(--r6); font-family: var(--f); font-size: 13px;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: background .15s;
+    }
+    .btn-gen-share:hover { background: var(--accent-h); }
+    .share-hint { font-size: 11.5px; color: var(--text-3); margin-bottom: 14px; line-height: 1.5; }
+
+    .share-results { display: none; }
+    .share-results.show { display: block; }
+
+    /* QR */
+    .qr-block {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r6); margin-bottom: 14px;
+    }
+    #qrCanvas { border-radius: 4px; }
+    .qr-right { display: flex; flex-direction: column; gap: 6px; }
+    .qr-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .qr-sub { font-size: 11.5px; color: var(--text-3); line-height: 1.4; }
+    .btn-dl-qr {
+      height: 32px; padding: 0 12px;
+      background: var(--surface-2); color: var(--text-2);
+      border: 1px solid var(--border-input); border-radius: var(--r6);
+      font-family: var(--f); font-size: 12px; font-weight: 500;
+      cursor: pointer; width: fit-content; transition: all .15s;
+    }
+    .btn-dl-qr:hover { background: white; border-color: #bdc5d0; }
+
+    /* Copy blocks */
+    .copy-block-wrap { margin-bottom: 12px; }
+    .copy-block-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .copy-block {
+      position: relative; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--r6);
+      padding: 12px 12px 10px;
+    }
+    .copy-block pre {
+      font-family: var(--f); font-size: 12.5px; color: var(--text-2);
+      white-space: pre-wrap; word-break: break-word; line-height: 1.6;
+      margin: 0 0 8px;
+    }
+    .btn-copy {
+      height: 28px; padding: 0 11px;
+      background: white; color: var(--text-2);
+      border: 1px solid var(--border-input); border-radius: 5px;
+      font-family: var(--f); font-size: 11.5px; font-weight: 500;
+      cursor: pointer; transition: all .15s;
+    }
+    .btn-copy:hover { background: var(--surface-2); border-color: #bdc5d0; }
+    .btn-copy.copied { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+
+
+
+    /* ── Edit existing overlay ── */
+    .edit-btn {
+      margin-left: auto; flex-shrink: 0;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12.5px; font-weight: 500; color: var(--text-3);
+      background: none; border: 1px solid var(--border);
+      border-radius: var(--r6); padding: 5px 11px; cursor: pointer;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .edit-btn:hover { color: var(--accent); border-color: var(--accent-border); background: var(--accent-bg); }
+    .edit-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(15,23,42,.45); backdrop-filter: blur(3px);
+      align-items: center; justify-content: center;
+    }
+    .edit-overlay.open { display: flex; }
+    .edit-overlay-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r10); box-shadow: 0 24px 48px rgba(15,23,42,.18);
+      padding: 32px 28px 24px; width: 440px; max-width: calc(100vw - 40px);
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .edit-overlay-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .edit-overlay-sub { font-size: 13px; color: var(--text-3); text-align: center; line-height: 1.55; }
+    .edit-dropzone-large {
+      width: 100%; border: 2px dashed var(--border); border-radius: var(--r8);
+      padding: 44px 20px; display: flex; flex-direction: column;
+      align-items: center; gap: 10px; cursor: default; text-align: center;
+      transition: border-color .15s, background .15s, color .15s; color: var(--text-3);
+    }
+    .edit-dropzone-large.drag-over { border-color: var(--focus); background: var(--accent-bg); color: var(--accent); }
+    .edit-dropzone-large svg { opacity: .35; }
+    .edit-dropzone-large .dz-label { font-size: 14px; font-weight: 500; }
+    .edit-dropzone-large .dz-sub { font-size: 12px; color: var(--text-4); }
+    .edit-overlay-cancel {
+      background: none; border: none; cursor: pointer; font-size: 13px;
+      color: var(--text-3); padding: 0; transition: color .12s;
+    }
+    .edit-overlay-cancel:hover { color: var(--text); }
+    @keyframes field-reimport {
+      0%   { background: #fef3c7; border-color: #f59e0b; }
+      100% { background: var(--surface); border-color: var(--border-input); }
+    }
+    .fi.reimport, .fta.reimport { animation: field-reimport .8s ease forwards; }
     /* ── Preview panel ── */
     .preview-panel {
       background: var(--surface); border: 1px solid var(--border);
@@ -334,6 +459,7 @@
   </div>
   <div class="app-sep"></div>
   <span class="app-tagline">Create a shareable contact-action page in seconds — no code needed</span>
+  <button class="edit-btn" onclick="openEditOverlay()">↩ Edit existing page</button>
 </header>
 
 <!-- ═══ LAYOUT ═══ -->
@@ -363,7 +489,7 @@
           class="fi rss-url-input"
           placeholder="e.g. HB1234 or SB567"
           style="height:34px;text-transform:uppercase;"
-          oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"
+          oninput="this.value=this.value.toUpperCase().replace(/\s/g,''); hideLsNotice();"
           onkeydown="if(event.key==='Enter') lookupLegiScan()"
         >
         <button id="lsBtn" class="btn-import" onclick="lookupLegiScan()">Look Up</button>
@@ -480,9 +606,56 @@
       </div>
       <div class="success-msg" id="successMsg">
         <div class="success-title">✓ Action page downloaded!</div>
-        <div class="success-body">Your HTML file is ready. Upload it to any web host, open it in a browser, or share the file directly — it works anywhere.</div>
+        <div class="success-body">Your file is ready to share with supporters.</div>
+      </div>
+
+      <!-- ── Share Kit ── -->
+      <div class="share-kit">
+        <div class="share-kit-label">📣 Organizer Share Kit</div>
+        <p class="share-hint">Upload your page first, then paste the URL below to generate a QR code and ready-to-send copy.</p>
+        <div class="share-url-row">
+          <input id="shareUrl" type="url" placeholder="https://yoursite.netlify.app/action-page.html" oninput="onShareUrlInput()">
+          <button class="btn-gen-share" onclick="generateShareKit()">Generate</button>
+        </div>
+        <div class="share-results" id="shareResults">
+          <!-- QR Code -->
+          <div class="qr-block">
+            <div id="qrContainer"></div>
+            <div class="qr-right">
+              <div class="qr-title">QR Code</div>
+              <div class="qr-sub">Print on flyers or share as an image so people can scan and go straight to your page.</div>
+              <button class="btn-dl-qr" onclick="downloadQR()">⬇ Download PNG</button>
+            </div>
+          </div>
+          <!-- Email blast -->
+          <div class="copy-block-wrap">
+            <div class="copy-block-title">✉️ Email Blast</div>
+            <div class="copy-block">
+              <pre id="emailBlastCopy"></pre>
+              <button class="btn-copy" onclick="copyShareText('emailBlastCopy', this)">Copy</button>
+            </div>
+          </div>
+          <!-- Instagram -->
+          <div class="copy-block-wrap">
+            <div class="copy-block-title">📸 Instagram Caption</div>
+            <div class="copy-block">
+              <pre id="igCaptionCopy"></pre>
+              <button class="btn-copy" onclick="copyShareText('igCaptionCopy', this)">Copy</button>
+            </div>
+          </div>
+          <!-- Facebook / X -->
+          <div class="copy-block-wrap">
+            <div class="copy-block-title">💬 Facebook &amp; X Caption</div>
+            <div class="copy-block">
+              <pre id="fbCaptionCopy"></pre>
+              <button class="btn-copy" onclick="copyShareText('fbCaptionCopy', this)">Copy</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+
 
   </div><!-- /input-panel -->
 
@@ -632,7 +805,7 @@ function generateEmailVariants(billNum, summary, stage, committeeNames) {
     : '';
 
   // Stage-specific ask and urgency lines
-  let askDirect = '', askCommunity = '', askConstituent = '', askPersonal = '', askShort = '', urgency = '';
+  let askDirect = '', askCommunity = '', askConstituent = '', askPersonal = '', askShort = '', urgency = '', closingLine = '';
   if (stage === 'referred') {
     askDirect     = `I urge your committee to schedule a public hearing for ${billRef} before session ends.`;
     askCommunity  = `I'm asking your committee to give ${billRef} a public hearing — our community deserves a chance to weigh in.`;
@@ -640,6 +813,7 @@ function generateEmailVariants(billNum, summary, stage, committeeNames) {
     askPersonal   = `scheduling a hearing for ${billRef}`;
     askShort      = `schedule a hearing for ${billRef} before session ends`;
     urgency       = `With the session moving quickly, time is short.`;
+    closingLine   = `If this bill does not receive a hearing, the public loses its chance to weigh in on something that matters to our community.`;
   } else if (stage === 'hearing') {
     askDirect     = `I'm writing to ask for your support on ${billRef} at the upcoming hearing.`;
     askCommunity  = `I hope you'll carry ${billRef} forward — this is exactly the kind of legislation our community has been asking for.`;
@@ -647,6 +821,31 @@ function generateEmailVariants(billNum, summary, stage, committeeNames) {
     askPersonal   = `supporting ${billRef} at the hearing`;
     askShort      = `support ${billRef} at the upcoming hearing`;
     urgency       = `The hearing is coming up and every voice counts.`;
+    closingLine   = `Every voice on the record helps keep this bill moving forward.`;
+  } else if (stage === 'committee') {
+    askDirect     = `I urge you to give ${billRef} a Do Pass recommendation before the crossover deadline.`;
+    askCommunity  = `I'm asking you to vote Do Pass on ${billRef} — our community showed up to testify and we're counting on the committee to advance it.`;
+    askConstituent= `Please give ${billRef} a Do Pass recommendation. Your committee's vote is the next step this bill needs to move forward.`;
+    askPersonal   = `giving ${billRef} a Do Pass recommendation in committee`;
+    askShort      = `give ${billRef} a Do Pass recommendation in committee`;
+    urgency       = `The committee deliberation is underway — this is the moment to act.`;
+    closingLine   = `A Do Pass recommendation keeps this bill alive and sends it to the full chamber for a floor vote.`;
+  } else if (stage === 'floor') {
+    askDirect     = `I urge you to vote YES on ${billRef} on Third Reading.`;
+    askCommunity  = `I hope you'll vote YES on ${billRef} on the floor — this bill reflects real community need and it has earned this moment.`;
+    askConstituent= `Please vote YES on ${billRef} when it comes to the floor. Your constituents are watching and this is the moment that counts.`;
+    askPersonal   = `voting YES on ${billRef} on Third Reading`;
+    askShort      = `vote YES on ${billRef} on Third Reading`;
+    urgency       = `The floor vote is coming — please make yours count.`;
+    closingLine   = `A YES vote would mean the world to the many people who have been advocating for this bill.`;
+  } else if (stage === 'governor') {
+    askDirect     = `I urge Governor Green to sign ${billRef} into law.`;
+    askCommunity  = `I hope Governor Green will sign ${billRef} — the legislature has done its part and this bill represents real progress for Hawaiʻi.`;
+    askConstituent= `Please sign ${billRef}. It passed the full legislature and now it's in your hands, Governor. Your constituents are asking you to act.`;
+    askPersonal   = `signing ${billRef} into law`;
+    askShort      = `urge Governor Green to sign ${billRef} into law`;
+    urgency       = `The Governor has the power to make this law — and the moment to act is now.`;
+    closingLine   = `With your signature, this becomes law — and that would make a real difference for families across Hawaiʻi.`;
   } else if (stage === 'passed') {
     askDirect     = `I'm writing to urge continued support for ${billRef} as it moves through the legislature.`;
     askCommunity  = `I hope you'll keep ${billRef} moving — the momentum behind it reflects real community need.`;
@@ -654,6 +853,7 @@ function generateEmailVariants(billNum, summary, stage, committeeNames) {
     askPersonal   = `seeing ${billRef} through to the end`;
     askShort      = `continue supporting ${billRef} — it's come too far to stall now`;
     urgency       = `This bill has come too far to stall now.`;
+    closingLine   = `Every step of support counts as this bill crosses the finish line.`;
   } else {
     askDirect     = `I'm writing to ask that you take up ${billRef} and help move it forward.`;
     askCommunity  = `I hope you'll take a closer look at ${billRef} — it's an issue our community cares deeply about.`;
@@ -661,6 +861,7 @@ function generateEmailVariants(billNum, summary, stage, committeeNames) {
     askPersonal   = `giving ${billRef} the attention it deserves`;
     askShort      = `take up ${billRef} this session`;
     urgency       = ``;
+    closingLine   = ``;
   }
 
   // V1: Direct & urgent — leads with the ask, states what's at stake
@@ -669,7 +870,7 @@ function generateEmailVariants(billNum, summary, stage, committeeNames) {
 
 My name is [Your Name] and I am a resident of [City], Hawaiʻi. ${askDirect}
 
-${reasonLine ? reasonLine + ' ' : ''}${urgency ? urgency + ' ' : ''}If this bill does not receive a hearing, the public loses its chance to weigh in on something that matters to our community.
+${reasonLine ? reasonLine + ' ' : ''}${urgency ? urgency + ' ' : ''}${closingLine}
 
 I respectfully ask that you act before this session closes.
 
@@ -752,10 +953,28 @@ function generatePhoneScripts(billNum, summary, stage, committeeNames) {
     askPersonal  = `about ${billRef} — it's something I care about personally`;
     askShort     = `about ${billRef}`;
   } else if (stage === 'hearing') {
-    askDirect    = `to ask for the representative's support on ${billRef} at the upcoming hearing`;
+    askDirect    = `to ask for support on ${billRef} at the upcoming hearing`;
     askCommunity = `to share that our community strongly supports ${billRef} and hopes it moves forward`;
     askUrgent    = `to urge a yes vote on ${billRef} at the hearing`;
     askPersonal  = `about ${billRef} — this one is personal to me`;
+    askShort     = `about ${billRef}`;
+  } else if (stage === 'committee') {
+    askDirect    = `to urge a Do Pass recommendation on ${billRef} before the crossover deadline`;
+    askCommunity = `to ask that the committee vote Do Pass on ${billRef} — our community showed up to testify and we're hoping the committee will advance it`;
+    askUrgent    = `to ask that ${billRef} receive a Do Pass recommendation as soon as possible`;
+    askPersonal  = `about ${billRef} — the hearing is over and I'm hoping the committee will vote to advance it`;
+    askShort     = `about ${billRef}`;
+  } else if (stage === 'floor') {
+    askDirect    = `to urge a YES vote on ${billRef} on Third Reading`;
+    askCommunity = `to share how much our community wants a YES vote on ${billRef} — this bill has earned it`;
+    askUrgent    = `to ask for a YES vote on ${billRef} on the floor — this is the moment that counts`;
+    askPersonal  = `about ${billRef} — a YES vote on Third Reading would mean a lot to me and people I know`;
+    askShort     = `about ${billRef}`;
+  } else if (stage === 'governor') {
+    askDirect    = `to urge Governor Green to sign ${billRef} into law`;
+    askCommunity = `to ask that the Governor sign ${billRef} — the legislature passed it and now it's time to make it law`;
+    askUrgent    = `to urge Governor Green to sign ${billRef} as soon as possible`;
+    askPersonal  = `about ${billRef} — the Governor signing it would make a real difference for my community`;
     askShort     = `about ${billRef}`;
   } else if (stage === 'passed') {
     askDirect    = `to ask that ${billRef} continue to receive support as it moves through the legislature`;
@@ -821,6 +1040,7 @@ Mahalo.`;
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function $id(id) { return document.getElementById(id); }
 
+
 function getFields() {
   return {
     org:      $id('fOrg').value.trim(),
@@ -831,7 +1051,7 @@ function getFields() {
     subject:  $id('fSubject').value.trim(),
     phone:    $id('fPhone').value.trim(),
     link:     $id('fLink').value.trim(),
-    email2:     $id('fCCEmail').value.trim(),
+    email2:   $id('fCCEmail').value.trim(),
     emailBody: $id('fEmailBody').value.trim(),
     phoneScript: $id('fPhoneScript').value.trim(),
   };
@@ -867,7 +1087,8 @@ function esc(s) {
 }
 
 // ── LegiScan API Integration ──────────────────────────────────────────────────
-const LEGISCAN_KEY = '6c858660f00b125a82929cda797ab0c1';
+// ← Paste your LegiScan API key here (free at legiscan.com/legiscan)
+const LEGISCAN_KEY = '6c858660f00b125a82929cda797ab0c1'; // EXPIRED — replace this
 
 // LegiScan numeric status codes → our internal stage labels
 // Ref: https://legiscan.com/misc/LegiScan_API_User_Manual.pdf
@@ -875,10 +1096,10 @@ const LS_STATUS_MAP = {
   1:  'intro',    // Introduced
   12: 'intro',    // Draft
   9:  'referred', // Refer (referred to committee)
-  10: 'hearing',  // Report Pass (passed out of committee / hearing scheduled)
-  2:  'passed',   // Engrossed (passed one chamber)
-  3:  'passed',   // Enrolled (passed both chambers)
-  4:  'passed',   // Passed
+  10: 'committee', // Report Pass (committee voted Do Pass, heading to floor calendar)
+  2:  'passed',    // Engrossed (passed one chamber)
+  3:  'governor',  // Enrolled (passed both chambers, sent to Governor)
+  4:  'passed',    // Passed
   7:  'passed',   // Veto Override
   8:  'passed',   // Chaptered / Signed into law
   5:  'general',  // Vetoed
@@ -905,7 +1126,7 @@ function fetchWithTimeout(url, options, ms) {
     .finally(() => clearTimeout(id));
 }
 
-// Fetch from LegiScan — tries direct CORS first, then races two CORS proxies
+// Fetch from LegiScan — tries direct CORS first, then races four CORS proxies
 async function legiScanFetch(params) {
   const qs = new URLSearchParams({ key: LEGISCAN_KEY, ...params }).toString();
   const url = 'https://api.legiscan.com/?' + qs;
@@ -919,19 +1140,38 @@ async function legiScanFetch(params) {
     }
   } catch (_) {}
 
-  // 2. Race both CORS proxies in parallel
+  // 2. Race four CORS proxies in parallel — more options = better reliability
   const enc = encodeURIComponent(url);
-  const proxyRace = (proxyUrl) =>
-    fetchWithTimeout(proxyUrl, {}, 9000)
-      .then(r => { if (!r.ok) throw new Error('not ok'); return r.json(); })
-      .then(json => { if (!json || json.status !== 'OK') throw new Error('bad response'); return json; });
+  const proxyRace = (label, proxyUrl, transform) =>
+    fetchWithTimeout(proxyUrl, {}, 8000)
+      .then(r => { if (!r.ok) throw new Error(label + ' HTTP ' + r.status); return r.json(); })
+      .then(raw => {
+        const json = transform ? transform(raw) : raw;
+        // Surface API-level errors (e.g. expired key) distinctly from network errors
+        if (json && json.status === 'ERROR') {
+          const msg = (json.alert && json.alert.message) || 'API error';
+          throw Object.assign(new Error(msg), { isApiError: true, apiMessage: msg });
+        }
+        if (!json || json.status !== 'OK') throw new Error(label + ' bad response: ' + JSON.stringify(json).slice(0, 80));
+        return json;
+      })
+      .catch(err => { console.warn('[LegiScan proxy fail]', label, err.message); throw err; });
 
   try {
     return await Promise.any([
-      proxyRace('https://api.allorigins.win/raw?url=' + enc),
-      proxyRace('https://api.codetabs.com/v1/proxy/?quest=' + enc),
+      proxyRace('allorigins',   'https://api.allorigins.win/raw?url=' + enc),
+      proxyRace('codetabs',     'https://api.codetabs.com/v1/proxy/?quest=' + enc),
+      proxyRace('corsproxy.io', 'https://corsproxy.io/?' + enc),
+      proxyRace('allorigins-get', 'https://api.allorigins.win/get?url=' + enc,
+        raw => { try { return JSON.parse(raw.contents); } catch(e) { throw new Error('allorigins-get parse fail'); } }),
     ]);
-  } catch (_) {}
+  } catch (aggErr) {
+    // If every rejection was an API-level error (e.g. bad key), surface that message
+    const errors = aggErr.errors || [];
+    const apiErr = errors.find(e => e && e.isApiError);
+    if (apiErr) throw new Error('LegiScan API error: ' + apiErr.apiMessage + '. Check that your API key is valid at legiscan.com.');
+    console.error('[LegiScan] All proxies failed. Details above.');
+  }
 
   return null;
 }
@@ -943,23 +1183,80 @@ async function lookupLegiScan() {
     return;
   }
 
+  // If user entered just digits (e.g. "2712"), try SB then HB automatically
+  if (/^\d+$/.test(raw)) {
+    return lookupWithAutoPrefix(raw);
+  }
+
   // Validate format: HB/SB/HCR/SCR/HCM/SCM + digits (strip trailing SD1/HD1 suffixes automatically)
   const cleanRaw = raw.replace(/[SH]D\d*$/, ''); // strip any "SD1", "HD2", etc. suffix
   const billMatch = cleanRaw.match(/^([HS][BCR][MR]?)(\d+)$/);
   if (!billMatch) {
-    showLsNotice('warn', 'Enter a valid Hawaii bill number (e.g. HB1234, SB567, HCR45, SCR12).');
+    showLsNotice('warn', 'Enter a valid Hawaii bill number — e.g. <strong>HB1234</strong> or <strong>SB567</strong>.');
     return;
   }
 
+  await runBillLookup(billMatch[1], billMatch[2], raw);
+}
+
+// Handles the case where the user types just digits — tries SB, then HB
+async function lookupWithAutoPrefix(digits) {
+  const btn = $id('lsBtn');
+  btn.textContent = 'Looking up\u2026';
+  btn.disabled = true;
+  showLsNotice('warn', 'Trying SB' + digits + ' and HB' + digits + '\u2026');
+
+  const prefixes = ['SB', 'HB'];
+  for (const prefix of prefixes) {
+    const match = prefix.match(/^([HS][BCR][MR]?)$/);
+    // Just treat prefix as type[1] and digits as type[2]
+    const pMatch = (prefix + digits).match(/^([HS][BCR][MR]?)(\d+)$/);
+    if (!pMatch) continue;
+    try {
+      const lsQuery = pMatch[1] + ' ' + pMatch[2];
+      const searchResult = await legiScanFetch({ op: 'getSearch', state: 'HI', query: lsQuery });
+      const results = searchResult ? (searchResult.searchresult || {}) : {};
+      const bills = Object.values(results).filter(r => r && typeof r === 'object' && r.bill_id);
+      const norm = s => (s || '').replace(/\s+/g, '').toUpperCase();
+      const found = bills.find(b => norm(b.bill_number) === prefix + digits) || (bills.length ? bills[0] : null);
+      if (!found) continue;
+
+      const billResult = await legiScanFetch({ op: 'getBill', id: found.bill_id });
+      if (!billResult) continue;
+
+      applyLegiScanData(billResult.bill);
+      const displayNum = (billResult.bill.bill_number || '').trim().replace(/\s+/g, '');
+      // Update the input to show the corrected full bill number
+      $id('lsBillNum').value = displayNum || (prefix + digits);
+      const lastAction = billResult.bill.last_action || billResult.bill.last_action_date || 'details imported';
+      showLsNotice('ok', '\u2713 Loaded ' + (displayNum || prefix + digits) + ' \u2014 ' + esc(lastAction));
+      btn.textContent = 'Look Up';
+      btn.disabled = false;
+      return;
+    } catch (e) {
+      // try next prefix
+    }
+  }
+
+  showLsNotice('error', 'No Hawaii bill found for SB' + digits + ' or HB' + digits + '. Try entering the full number, like <strong>SB' + digits + '</strong>.');
+  btn.textContent = 'Look Up';
+  btn.disabled = false;
+}
+
+async function runBillLookup(prefix, digits, displayRaw) {
   const btn = $id('lsBtn');
   btn.textContent = 'Looking up\u2026';
   btn.disabled = true;
   hideLsNotice();
 
+  // Show a "slow connection" message after 4 s so the user isn't staring at nothing
+  const slowTimer = setTimeout(() => {
+    showLsNotice('warn', 'Still looking\u2026 connecting through a CORS proxy, this can take a moment.');
+  }, 4000);
+
   try {
-    // Step 1: search by bill number in Hawaii
     // LegiScan requires a space between prefix and number ("HB 1234") for exact matching
-    const lsQuery = billMatch[1] + ' ' + billMatch[2];
+    const lsQuery = prefix + ' ' + digits;
     const searchResult = await legiScanFetch({ op: 'getSearch', state: 'HI', query: lsQuery });
     if (!searchResult) {
       throw new Error('Could not reach the LegiScan API. Check your internet connection and try again.');
@@ -968,12 +1265,12 @@ async function lookupLegiScan() {
     const results = searchResult.searchresult || {};
     const bills = Object.values(results).filter(r => r && typeof r === 'object' && r.bill_id);
     if (!bills.length) {
-      throw new Error('No Hawaii bill found matching \u201C' + raw + '\u201D. Double-check the bill number and try again.');
+      throw new Error('No Hawaii bill found matching \u201C' + displayRaw + '\u201D. Double-check the bill number and try again.');
     }
 
     // Prefer exact match on bill_number (stored as "HB1234" or "HB 1234" depending on session)
     const norm = s => (s || '').replace(/\s+/g, '').toUpperCase();
-    const exact = bills.find(b => norm(b.bill_number) === raw);
+    const exact = bills.find(b => norm(b.bill_number) === displayRaw);
     const match = exact || bills[0];
 
     // Step 2: get full bill details (title, history, committee, etc.)
@@ -990,6 +1287,7 @@ async function lookupLegiScan() {
   } catch (err) {
     showLsNotice('error', esc(err.message));
   } finally {
+    clearTimeout(slowTimer);
     btn.textContent = 'Look Up';
     btn.disabled = false;
   }
@@ -1037,6 +1335,26 @@ function applyLegiScanData(bill) {
              + '. Submit your written testimony now \u2014 every voice on the record matters.';
     subject  = 'Written Testimony in Support of ' + billNum;
 
+  } else if (stage === 'committee') {
+    headline = 'Urge ' + cmtFull + ' to Give ' + billNum + ' a Do Pass Recommendation';
+    summary  = 'The hearing on ' + billNum + ' has taken place'
+             + (committeeName ? ' in ' + cmtFull : '')
+             + '. Now the committee is deciding whether to advance it. '
+             + 'Contact committee members today and urge them to give ' + billNum + ' a Do Pass recommendation.';
+    subject  = 'Please Give ' + billNum + ' a Do Pass Recommendation';
+
+  } else if (stage === 'floor') {
+    headline = billNum + ' Is Headed to a Floor Vote \u2014 Contact Your Legislators Now';
+    summary  = billNum + ' has cleared committee and is scheduled for a floor vote. '
+             + 'Contact your representative and senator today and urge them to vote YES on Third Reading.';
+    subject  = 'Please Vote YES on ' + billNum + ' on Third Reading';
+
+  } else if (stage === 'governor') {
+    headline = billNum + ' Is on Governor Green\u2019s Desk \u2014 Urge Him to Sign It';
+    summary  = billNum + ' has passed the Hawaii Legislature and is now on Governor Green\u2019s desk. '
+             + 'Contact the Governor\u2019s office today and urge him to sign ' + billNum + ' into law.';
+    subject  = 'Please Sign ' + billNum + ' Into Law';
+
   } else if (stage === 'passed') {
     headline = billNum + ' Passed \u2014 Keep the Momentum Going';
     summary  = billNum + ' has cleared a key vote and continues through the legislature. '
@@ -1050,6 +1368,10 @@ function applyLegiScanData(bill) {
              + 'Your email and call to your representatives can make a real difference.';
     subject  = 'Please Support ' + billNum;
   }
+
+  // Clear all auto-filled fields first so stale values (e.g. from sample) don't linger
+  ['fCampaign','fHeadline','fSummary','fSubject','fLink','fEmail','fCCEmail','fPhone','fEmailBody','fPhoneScript']
+    .forEach(id => { const el = $id(id); if (el) el.value = ''; });
 
   setFieldVal('fCampaign', campaignName);
   setFieldVal('fHeadline', headline);
@@ -1092,11 +1414,14 @@ function applyLegiScanData(bill) {
   $id('bsbBillNum').textContent = billNum;
   const badge = $id('bsbBadge');
   const stageLabels = {
-    referred: 'Awaiting Hearing',
-    hearing:  'Hearing Scheduled',
-    passed:   'Passed',
-    intro:    'Introduced',
-    general:  'In Progress',
+    referred:  'Awaiting Hearing',
+    hearing:   'Hearing Scheduled',
+    committee: 'Committee Deliberating',
+    floor:     'Floor Vote',
+    governor:  "On Governor's Desk",
+    passed:    'Passed',
+    intro:     'Introduced',
+    general:   'In Progress',
   };
   badge.textContent = stageLabels[stage] || 'In Progress';
   badge.className = 'stage-badge ' + (stage === 'general' ? 'intro' : stage);
@@ -1174,8 +1499,12 @@ function doDownload() {
   const msg = $id('successMsg');
   msg.classList.add('show');
   clearTimeout(msg._t);
-  msg._t = setTimeout(() => msg.classList.remove('show'), 9000);
+  msg._t = setTimeout(() => msg.classList.remove('show'), 12000);
+
+  // After a beat, scroll the share section into view and flash it
+
 }
+
 
 // ── Sample ────────────────────────────────────────────────────────────────────
 function loadSample() {
@@ -1199,9 +1528,12 @@ function buildOutputHTML(f) {
   // ── Email body variants ───────────────────────────────────────────────────
   // Try to detect stage from headline/subject text for variant generation
   let autoStage = 'general';
-  if (/hearing/i.test(headline + subject))    autoStage = 'referred';
-  else if (/testimony/i.test(headline))       autoStage = 'hearing';
-  else if (/passed/i.test(headline))          autoStage = 'passed';
+  if      (/do pass/i.test(headline + subject))                            autoStage = 'committee';
+  else if (/floor vote|third reading/i.test(headline + subject))           autoStage = 'floor';
+  else if (/governor.*sign|sign.*into law|governor.*desk/i.test(headline + subject)) autoStage = 'governor';
+  else if (/testimony|submit.*testim/i.test(headline))                     autoStage = 'hearing';
+  else if (/schedule.*hearing|public hearing/i.test(headline + subject))   autoStage = 'referred';
+  else if (/passed/i.test(headline))                                        autoStage = 'passed';
 
   const generatedVariants = generateEmailVariants(campaign, summary, autoStage, []);
   const emailBodyA = f.emailBody && f.emailBody.trim() ? f.emailBody.trim() : generatedVariants[0];
@@ -1214,6 +1546,42 @@ function buildOutputHTML(f) {
   const phoneScriptsJson = JSON.stringify([phoneScriptA, ...generatedPhoneScripts.slice(1)]);
 
   const telHref = phone ? 'tel:' + phone.replace(/[^0-9+]/g, '') : '#';
+
+  // ── Momentum banner (shown at top of output page for active stages) ─────────
+  const momentumBannerHTML = (() => {
+    if (autoStage === 'committee') return `
+<div class="momentum-bar momentum-committee">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"><\/polygon><\/svg>
+  <span>🎉 <strong>The hearing happened — that's real progress!</strong> Now the committee is deciding. Contact them and urge a Do Pass vote.</span>
+</div>`;
+    if (autoStage === 'floor') return `
+<div class="momentum-bar momentum-floor">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"><\/line><polyline points="5 12 12 5 19 12"><\/polyline><\/svg>
+  <span>🎉 <strong>This bill cleared committee — amazing!</strong> It's heading to a floor vote. Contact your legislator and ask for a YES.</span>
+</div>`;
+    if (autoStage === 'governor') return `
+<div class="momentum-bar momentum-governor">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"><\/polyline><\/svg>
+  <span>🎉 <strong>This bill passed the Legislature — incredible!</strong> One step left: urge Governor Green to sign it into law.</span>
+</div>`;
+    if (autoStage === 'hearing') return `
+<div class="momentum-bar momentum-hearing">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"><\/path><path d="M13.73 21a2 2 0 0 1-3.46 0"><\/path><\/svg>
+  <span>🎉 <strong>A hearing was scheduled — this bill is moving!</strong> Submit your written testimony now and get your voice on the record.</span>
+</div>`;
+    if (autoStage === 'referred') return `
+<div class="momentum-bar momentum-referred">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"><\/rect><line x1="16" y1="2" x2="16" y2="6"><\/line><line x1="8" y1="2" x2="8" y2="6"><\/line><line x1="3" y1="10" x2="21" y2="10"><\/line><\/svg>
+  <span>🎉 <strong>This bill was referred to committee — it's in the process!</strong> Now help it get a hearing before the session ends.</span>
+</div>`;
+    if (autoStage === 'passed') return `
+<div class="momentum-bar momentum-passed">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"><\/path><\/svg>
+  <span><strong>Hooray — it passed!</strong> &nbsp;This bill is now law. Thank you to everyone who called, emailed, and showed up. It made a real difference.</span>
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"><\/path><\/svg>
+</div>`;
+    return '';
+  })();
 
   const badgeHTML = campaign
     ? `<div class="badge">${esc(campaign)}</div>` : '';
@@ -1343,6 +1711,89 @@ function buildOutputHTML(f) {
       </div>
     </div>` : '';
 
+  // ── Testimony Guide ──────────────────────────────────────────────────────────
+  // Extract bill number from campaign field (e.g. "SB2925 – Relating to...")
+  const billNumForGuide = (campaign.match(/^([A-Z]+\d+)/) || ['',''])[1];
+  const billNumWithSpace = billNumForGuide.replace(/([A-Z]+)(\d+)$/, '$1 $2');
+
+  // Stage-aware header: hearing = urgent; otherwise = prep-now
+  const isHearing = autoStage === 'hearing';
+  const tgTitle = isHearing
+    ? 'Hearing Scheduled — Submit Your Testimony Now'
+    : 'Get Ready to Testify';
+  const tgHearingPill = isHearing ? `
+    <div style="text-align:center">
+      <div class="tg-hearing-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><\/svg>
+        Hearing scheduled &#8212; submit your testimony now
+      </div>
+    </div>` : '';
+
+  const testimonySection = billNumForGuide ? `
+<div class="hdiv"></div>
+<section class="tg-section" id="testimony-guide">
+  <div class="tg-inner">
+
+    <div class="tg-eyebrow">Want to make an even bigger impact?</div>
+    <h2 class="tg-title">Your written testimony becomes part of the official record</h2>
+    <p class="tg-desc">Committee members and their staff read every submission. Your name &#8212; attached to this bill, permanently. It&#8217;s the most direct way your voice gets heard.</p>
+    ${tgHearingPill}
+
+    <div class="tg-info-card">
+      <strong>Good to know:</strong> Hearings are usually announced just a few days before they happen &#8212; sometimes less. Once a hearing is scheduled, written testimony is due 24 hours before it starts. Creating your account now (it takes 2 minutes) means you&#8217;ll be ready to go the moment one is announced.
+    </div>
+
+    <button class="tg-expand-btn" id="tg-expand-btn" onclick="toggleTestimonyGuide()">
+      Show me how to submit testimony
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/><\/svg>
+    </button>
+
+    <div class="tg-steps-simple" id="tg-steps-simple" style="display:none">
+
+      <hr class="tg-divider">
+
+      <div class="tg-simple-step">
+        <div class="tg-snum">1</div>
+        <div class="tg-stext">
+          <strong>Create your free account &#8212; once, good forever</strong>
+          <small>Takes about 2 minutes. The same account works for every bill, every session.</small>
+          <a href="https://www.capitol.hawaii.gov/account/register.aspx" target="_blank" rel="noopener" class="tg-btn tg-btn-primary">Create Account &#8594;</a>
+          &nbsp;<span style="font-size:12px;color:#484f58">Already have one? <a href="https://www.capitol.hawaii.gov/account/login.aspx" target="_blank" rel="noopener" style="color:#58a6ff;text-decoration:none">Log in</a></span>
+        </div>
+      </div>
+
+      <div class="tg-simple-step">
+        <div class="tg-snum">2</div>
+        <div class="tg-stext">
+          <strong>Copy your text</strong>
+          <small>The email you already drafted works perfectly as testimony. Add your name, island, and zip code at the top &#8212; those are required on the form.</small>
+          <button onclick="copyTestimonyText()" id="tg-copy-testimony-btn" class="tg-btn tg-btn-copy">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><\/svg>
+            Copy Email Text
+          </button>
+        </div>
+      </div>
+
+      <div class="tg-simple-step">
+        <div class="tg-snum">3</div>
+        <div class="tg-stext">
+          <strong>Submit on capitol.hawaii.gov</strong>
+          <small>Log in &#8594; &#8220;Submit Testimony&#8221; &#8594; enter the bill number below &#8594; paste your text &#8594; submit.</small>
+          <div class="tg-bill-row">
+            <span class="tg-bill-code" id="tg-bill-num-text">${esc(billNumForGuide)}</span>
+            <button onclick="copyBillNum()" id="tg-copy-bill-btn" class="tg-copy-bill">Copy</button>
+            <span class="tg-soft-note">no spaces</span>
+          </div>
+          <br>
+          <a href="https://www.capitol.hawaii.gov/account/login.aspx" target="_blank" rel="noopener" class="tg-btn-submit">Go Submit Your Testimony &#8594;</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>` : '';
+
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1426,6 +1877,48 @@ footer{background:#0d1117;border-top:1px solid #21262d;padding:16px 28px;text-al
 .ps-script{padding:16px;color:#c9d1d9;font-size:14px;line-height:1.9;white-space:pre-wrap;font-family:inherit}
 .ps-script.ps-anim{animation:ec-fade .28s ease}
 .ps-actions{display:flex;flex-wrap:wrap;gap:10px}
+/* ── Testimony Guide ── */
+.tg-section{padding:48px 28px;background:#0d1117}.tg-inner{max-width:640px;margin:0 auto}
+.tg-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6e7681;margin-bottom:10px;text-align:center}
+.tg-title{font-size:22px;font-weight:800;color:#f0f6fc;letter-spacing:-.4px;text-align:center;margin-bottom:10px;line-height:1.3}
+.tg-desc{font-size:15px;color:#8b949e;line-height:1.75;text-align:center;max-width:480px;margin:0 auto 20px}
+.tg-hearing-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(240,136,62,.12);border:1px solid rgba(240,136,62,.3);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:#f0883e;margin:0 auto 20px;width:fit-content}
+.tg-info-card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px 18px;font-size:13px;color:#8b949e;line-height:1.7;margin-bottom:24px}
+.tg-info-card strong{color:#c9d1d9}
+.tg-expand-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 24px;background:#161b22;border:1.5px solid #30363d;border-radius:10px;color:#c9d1d9;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:-.2px}
+.tg-expand-btn:hover{background:#21262d;border-color:#484f58;color:#f0f6fc}
+.tg-expand-btn svg{transition:transform .25s;flex-shrink:0}
+.tg-expand-btn.open svg{transform:rotate(180deg)}
+.tg-steps-simple{margin-top:20px;display:flex;flex-direction:column;gap:16px;animation:ec-fade .28s ease}
+.tg-simple-step{display:flex;gap:16px;align-items:flex-start}
+.tg-snum{width:28px;height:28px;border-radius:50%;background:#1f6feb;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.tg-stext{flex:1;font-size:14px;color:#8b949e;line-height:1.65}
+.tg-stext strong{color:#f0f6fc;display:block;margin-bottom:3px;font-size:15px}
+.tg-stext small{font-size:12px;color:#6e7681;display:block;margin-bottom:8px}
+.tg-stext a{color:#58a6ff;text-decoration:none}.tg-stext a:hover{text-decoration:underline}
+.tg-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;line-height:1;transition:all .15s}
+.tg-btn:hover{transform:translateY(-1px)}.tg-btn-primary{background:#1f6feb;color:#fff}.tg-btn-primary:hover{background:#388bfd}
+.tg-btn-copy{background:#238636;color:#fff}.tg-btn-copy:hover{background:#2ea043}
+.tg-bill-row{display:inline-flex;align-items:center;gap:10px;background:#161b22;border:1px solid #30363d;border-radius:7px;padding:8px 12px;margin-top:6px}
+.tg-bill-code{font-family:'Courier New',monospace;font-size:16px;font-weight:800;color:#f0f6fc;letter-spacing:.5px}
+.tg-copy-bill{background:#21262d;color:#8b949e;border:1px solid #30363d;border-radius:5px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.tg-copy-bill:hover{background:#30363d;color:#c9d1d9}
+.tg-soft-note{font-size:11px;color:#484f58;margin-left:4px}
+.tg-btn-submit{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,#1a7f37,#238636);color:#fff;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s;margin-top:4px}
+.tg-btn-submit:hover{background:linear-gradient(135deg,#2ea043,#3fb950);transform:translateY(-1px)}
+.tg-divider{border:none;border-top:1px solid #161b22;margin:20px 0}
+@media(max-width:600px){.tg-section{padding:36px 20px}.tg-simple-step{gap:12px}}
+.momentum-bar{display:flex;align-items:center;justify-content:center;gap:9px;padding:12px 20px;font-size:13.5px;font-weight:500;line-height:1.45;width:100%;box-sizing:border-box;text-align:center;flex-wrap:wrap}
+.momentum-bar svg{flex-shrink:0;opacity:.85}
+.momentum-bar strong{font-weight:700}
+.momentum-referred{background:#fef3c7;color:#92400e}
+.momentum-hearing{background:#fee2e2;color:#991b1b}
+.momentum-committee{background:#ede9fe;color:#5b21b6}
+.momentum-floor{background:#dbeafe;color:#1e40af}
+.momentum-governor{background:#dcfce7;color:#166534}
+.momentum-passed{background:linear-gradient(135deg,#fef9c3,#fef3c7);color:#78350f;padding:15px 20px;font-size:14.5px;border-bottom:2px solid #fbbf24}
+.momentum-passed strong{color:#92400e}
+@media(max-width:600px){.momentum-bar{font-size:13px;padding:11px 16px}}
 </style>
 </head>
 <body>
@@ -1435,6 +1928,7 @@ footer{background:#0d1117;border-top:1px solid #21262d;padding:16px 28px;text-al
     ${org ? esc(org) : '<span style="color:#484f58;font-weight:400">Your Organization</span>'}
   </div>
 </nav>
+${momentumBannerHTML}
 <section class="hero">
   ${badgeHTML}
   <h1>${esc(headline)}</h1>
@@ -1446,6 +1940,7 @@ footer{background:#0d1117;border-top:1px solid #21262d;padding:16px 28px;text-al
 ${emailComposerSection}
 ${phoneComposerSection}
 ${(email || phone) ? '<div class="hdiv"></div>' + contactSection : ''}
+${testimonySection}
 <div class="hdiv"></div>
 <section class="about">
   <div class="about-inner">
@@ -1505,9 +2000,9 @@ ${(email || phone) ? '<div class="hdiv"></div>' + contactSection : ''}
   window.sendEmail = function(e) {
     e.preventDefault();
     const body = ta ? ta.value : emailVariants[0];
-    let href = 'mailto:' + encodeURIComponent(emailTo);
+    let href = 'mailto:' + emailTo;
     const params = [];
-    if (emailCC)      params.push('cc=' + encodeURIComponent(emailCC));
+    if (emailCC)      params.push('cc=' + emailCC);
     if (emailSubject) params.push('subject=' + encodeURIComponent(emailSubject));
     if (body) params.push('body=' + encodeURIComponent(body.substring(0, 1800)));
     if (params.length) href += '?' + params.join('&');
@@ -1548,16 +2043,246 @@ ${(email || phone) ? '<div class="hdiv"></div>' + contactSection : ''}
   };
 
 
+  // ── Testimony Guide ──────────────────────────────────────────────────────
+  window.toggleTestimonyGuide = function() {
+    var steps = document.getElementById('tg-steps-simple');
+    var btn = document.getElementById('tg-expand-btn');
+    if (!steps) return;
+    var isOpen = steps.style.display !== 'none';
+    steps.style.display = isOpen ? 'none' : 'flex';
+    if (btn) btn.classList.toggle('open', !isOpen);
+  };
+
+  window.copyBillNum = function() {
+    var el = document.getElementById('tg-bill-num-text');
+    var btn = document.getElementById('tg-copy-bill-btn');
+    var text = el ? el.textContent.trim() : '';
+    var orig = btn ? btn.textContent : '';
+    function ok() { if (btn) { btn.textContent = '\u2713 Copied'; setTimeout(function(){ btn.textContent = orig; }, 2000); } }
+    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(ok).catch(ok); } else { ok(); }
+  };
+
+  window.copyTestimonyText = function() {
+    var ta = document.getElementById('ec-body');
+    var btn = document.getElementById('tg-copy-testimony-btn');
+    var text = ta ? ta.value : '';
+    var orig = btn ? btn.innerHTML : '';
+    function ok() { if (btn) { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/><\/svg> Copied!'; setTimeout(function(){ btn.innerHTML = orig; }, 2500); } }
+    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(ok).catch(ok); } else { ok(); }
+  };
+
+
 })();
 <\/script>
+<script type="application/json" id="apg-data">${JSON.stringify({
+  org: f.org || '',
+  campaign: f.campaign || '',
+  headline: f.headline || '',
+  summary: f.summary || '',
+  email: f.email || '',
+  email2: f.email2 || '',
+  subject: f.subject || '',
+  phone: f.phone || '',
+  link: f.link || '',
+  emailBody: f.emailBody || '',
+  phoneScript: f.phoneScript || ''
+})}<\/script>
 </body>
 </html>`;
+}
+
+
+
+
+
+
+// ── Drop to reopen ────────────────────────────────────────────────────────────
+const EDIT_DZ_RESET = '<svg width="38" height="38" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 11V13C2 13.55 2.45 14 3 14H13C13.55 14 14 13.55 14 13V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 2V10M8 2L5 5M8 2L11 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="dz-label">Drop your action page HTML here</div><div class="dz-sub">Works with any page downloaded from this tool</div>';
+
+function openEditOverlay() {
+  const overlay = $id('editOverlay');
+  if (overlay) overlay.classList.add('open');
+}
+
+function closeEditOverlay() {
+  const overlay = $id('editOverlay');
+  if (overlay) overlay.classList.remove('open');
+  const zone = $id('editDropzone');
+  if (zone) { zone.innerHTML = EDIT_DZ_RESET; zone.classList.remove('drag-over'); }
+}
+
+function handleFileDrop(e) {
+  e.preventDefault();
+  const zone = $id('editDropzone');
+  if (!zone) return;
+  zone.classList.remove('drag-over');
+
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.name.endsWith('.html')) {
+    zone.innerHTML = '<div class="dz-label">⚠ Drop an HTML file</div><div class="dz-sub">Only .html files from this tool will work</div>';
+    setTimeout(() => { zone.innerHTML = EDIT_DZ_RESET; }, 2500);
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const html = ev.target.result;
+    const match = html.match(/<script type="application\/json" id="apg-data">([\s\S]*?)<\/script>/);
+    if (!match) {
+      zone.innerHTML = '<div class="dz-label">⚠ No save data found</div><div class="dz-sub">Only pages downloaded from this tool can be reloaded</div>';
+      setTimeout(() => { zone.innerHTML = EDIT_DZ_RESET; }, 3500);
+      return;
+    }
+    try {
+      const data = JSON.parse(match[1]);
+      const fields = ['fOrg','fCampaign','fHeadline','fSummary','fEmail','fCCEmail','fSubject','fPhone','fLink','fEmailBody','fPhoneScript'];
+      const keys   = ['org','campaign','headline','summary','email','email2','subject','phone','link','emailBody','phoneScript'];
+      fields.forEach((id, i) => {
+        const el = $id(id);
+        const val = data[keys[i]] || '';
+        if (!el || el.value === val) return;
+        el.value = val;
+        el.classList.remove('reimport');
+        void el.offsetWidth;
+        el.classList.add('reimport');
+      });
+      zone.innerHTML = '<div class="dz-label">✓ ' + (data.org || data.campaign || 'Page') + ' loaded</div><div class="dz-sub">All fields restored — closing…</div>';
+      onInput();
+      setTimeout(() => { closeEditOverlay(); }, 1200);
+    } catch(err) {
+      zone.innerHTML = '<div class="dz-label">⚠ Couldn\'t read the file</div><div class="dz-sub">The file may be corrupted</div>';
+      setTimeout(() => { zone.innerHTML = EDIT_DZ_RESET; }, 3000);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderPreview();
 updateFilename();
+
+// ── Share Kit ─────────────────────────────────────────────────────────────────
+let _qrObj = null;
+
+function onShareUrlInput() {
+  // Hide results if URL is cleared
+  const url = $id('shareUrl').value.trim();
+  if (!url) $id('shareResults').classList.remove('show');
+}
+
+function generateShareKit() {
+  const url = $id('shareUrl').value.trim();
+  if (!url) { $id('shareUrl').focus(); return; }
+
+  const f = getFields();
+  const billRef  = (f.campaign || 'this bill').split('–')[0].trim();
+  const headline = f.headline || ('Take action on ' + billRef);
+  const summary  = f.summary  || '';
+  const org      = f.org      || 'We';
+
+  // ── QR Code ──
+  const container = $id('qrContainer');
+  container.innerHTML = '';
+  _qrObj = null;
+  if (typeof QRCode !== 'undefined') {
+    _qrObj = new QRCode(container, {
+      text: url, width: 140, height: 140,
+      colorDark: '#1a2332', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } else {
+    // Fallback: show URL as text if library didn't load
+    container.innerHTML = '<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:6px;font-size:10px;color:#6b7280;text-align:center;padding:8px;">QR library not loaded — check internet connection</div>';
+  }
+
+  // ── Email Blast ──
+  const emailBlast =
+`Subject: Take action on ${billRef} — your voice matters
+
+Hi,
+
+${org} needs your help. ${headline}.${summary ? '\n\n' + summary : ''}
+
+It takes less than 2 minutes — just click the link below to send a message directly to your legislators:
+
+👉 ${url}
+
+Please share this with friends and family in Hawaiʻi. The more voices, the better.
+
+Mahalo,
+${org}`;
+
+  // ── Instagram Caption ──
+  const igCaption =
+`🌺 ${headline}.
+${summary ? '\n' + summary.split('.')[0] + '.\n' : ''}
+Click the link in our bio to take action in under 2 minutes. Every message counts. 🙏
+
+#HawaiiLegislature #TakeAction #${billRef.replace(/\s+/g,'')} #Hawaii #Aloha`;
+
+  // ── Facebook / X Caption ──
+  const fbCaption =
+`${headline} — take action now: ${url}
+${summary ? '\n' + summary.split('.')[0] + '.' : ''}
+
+It takes less than 2 minutes to make your voice heard. Please share this with anyone who cares about Hawaiʻi. 🌺
+
+#HawaiiLegislature #${billRef.replace(/\s+/g,'')}`;
+
+  $id('emailBlastCopy').textContent = emailBlast;
+  $id('igCaptionCopy').textContent  = igCaption;
+  $id('fbCaptionCopy').textContent  = fbCaption;
+
+  $id('shareResults').classList.add('show');
+}
+
+function downloadQR() {
+  const container = $id('qrContainer');
+  const canvas = container.querySelector('canvas');
+  const img    = container.querySelector('img');
+  let src = '';
+  if (canvas) src = canvas.toDataURL('image/png');
+  else if (img) src = img.src;
+  if (!src) return;
+  const a = document.createElement('a');
+  a.download = 'qr-code.png';
+  a.href = src;
+  a.click();
+}
+
+function copyShareText(id, btn) {
+  const text = $id(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+
+<!-- ─── EDIT EXISTING OVERLAY ─── -->
+<div class="edit-overlay" id="editOverlay" onclick="if(event.target===this)closeEditOverlay()">
+  <div class="edit-overlay-box">
+    <div class="edit-overlay-title">Edit an existing page</div>
+    <p class="edit-overlay-sub">Drag in an action page you previously downloaded to restore all your fields and pick up where you left off.</p>
+    <div
+      class="edit-dropzone-large" id="editDropzone"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="handleFileDrop(event)"
+    >
+      <svg width="38" height="38" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 11V13C2 13.55 2.45 14 3 14H13C13.55 14 14 13.55 14 13V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M8 2V10M8 2L5 5M8 2L11 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="dz-label">Drop your action page HTML here</div>
+      <div class="dz-sub">Works with any page downloaded from this tool</div>
+    </div>
+    <button class="edit-overlay-cancel" onclick="closeEditOverlay()">Cancel</button>
+  </div>
+</div>
 
 </body>
 </html>
